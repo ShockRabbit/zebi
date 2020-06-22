@@ -1,5 +1,12 @@
 #!/bin/sh
 
+function request_login_mas() {
+    # Request login to Mac App Store
+    echo_title "Login to Mac App Store"
+    echo "you must login to Mac App Store"
+    open -a "App Store"
+}
+
 function install_process_init() {
     local config_path=$1
     
@@ -13,11 +20,14 @@ function install_process_init() {
     # install jq
     brew install jq
 
-    # install mas
-    brew install mas
+    # if order contains mas -> install mas
+    order=`cat $config_path | jq -r ".order[]"`
+    for o in $order; do
+        if [[ $o == "mas" ]] ; then
+            # install mas
+            brew install mas
+            request_login_mas
+        fi
+    done
 
-    # Request login to Mac App Store
-    echo_title "Login to Mac App Store"
-    echo "you must login to Mac App Store"
-    open -a "App Store"
 }
