@@ -1,8 +1,22 @@
 #!/bin/sh
 
+function safe_delete() {
+    local path=$1
+    if [ -f $path ]; then
+        rm $path
+    fi
+}
+
 function ssh_keygen() {
     local email=$1
     local save_path=$2
+    local pub_file=$save_path.pub
+    safe_delete $save_path
+    safe_delete $pub_file
+
+    echo "-----------------------------------------------------"
+    echo "generate ssh key (${email}) : ${save_path}"
+    echo "-----------------------------------------------------"
 expect <<EOF
 set timeout 1
 spawn ssh-keygen -t rsa -b 2048 -C $email
@@ -21,18 +35,24 @@ function register_ssh_key() {
     local url=$2
     local private_token=$3
 
-    local ssh_path="$HOME/.ssh/id_rsa_$name"
+    local ssh_path=$HOME/.ssh/id_rsa_$name
     local title="$USER_$name"
-    local ssh_key=$(cat ssh_path)
+    local ssh_key=$(cat $ssh_path)
 
     if [[ $url == *"github.com"* ]] ; then
-        echo "add ssh key to $url"
+        echo "-----------------------------------------------------"
+        echo "register ssh key to $url"
+        echo "-----------------------------------------------------"
         curl -u "username:$private_token" "https://api.github.com/user/keys?title=$title&key=ssh_key"
     elif [[ $url == *"gitlab"* ]] ; then
-        echo "add ssh key to $url"
+        echo "-----------------------------------------------------"
+        echo "register ssh key to $url"
+        echo "-----------------------------------------------------"
         curl --header "Private-Token: $private_token" "https://$url/api/v4/users/keys?title=$title&key=$ssh_key"
     else
-        echo "[add ssh key] not supported : $url"
+        echo "-----------------------------------------------------"
+        echo "[register ssh key] not supported : $url"
+        echo "-----------------------------------------------------"
     fi
     #FIXME 실패했을 때는 git 과 관련된 부분은 다 실패할 것.. 재시도나 끊거나 등 대응 필요
 }
@@ -45,13 +65,15 @@ function create_git_config() {
     local user_email=$4
     local include_paths=$5
 
-    local file_name=".gitconfig_$name"
-    local config_path="$HOME/$file_name"
+    local file_name=.gitconfig_$name
+    local config_path=$HOME/$file_name
+
+    echo "------------------------------------------------------------"
+    echo "create ${file_name} & add Host info to ~/.ssh/config"
+    echo "------------------------------------------------------------"
 
     # create .gitconfig_$name
-    if [ -f"$config_path" ] ; then
-        rm $config_path
-    fi
+    safe_delete $config_path
     echo "[user]" >> $config_path
     echo "\temail = $user_email" >> $config_path
     echo "\tname = $user_name" >> $config_path
@@ -61,22 +83,40 @@ function create_git_config() {
     fi
 
     # add includeIf path to .gitconfig
-    local gitconfig_path="$HOME/.gitconfig"
+    local gitconfig_path=$HOME/.gitconfig
     for p in $include_paths; do
-        mkdir -p p
-        local include_info="[includeIf \"gitdir:$p/\"]"
-        local count=$(grep -c "$include_info" $gitconfig_path)
+        local real_path=$(eval echo $p)
+        echo "---------------------------"
+        echo "include path : $real_path"
+        echo "---------------------------"
+        mkdir -p $real_path
+        local include_info="[includeIf \"gitdir:$real_path/\"]"
+        echo "include info: $include_info"
+        echo "---------------------------"
+        local count=$(grep -cF "$include_info" $gitconfig_path)
         if [ $count -eq 0 ] ; then
+            echo "add include_info : $include_info"
+            echo "---------------------------"
             echo $include_info >> $gitconfig_path
             echo "\tpath = $file_name" >> $gitconfig_path
         fi
     done
 
     # add Host info to ~/.ssh/config
-    local sshconfig_path="$HOME/.ssh/config"
+    local sshconfig_path=$HOME/.ssh/config
     local host_info="Host $url"
-    local count=$(grep -c "$host_info" $sshconfig_path)
-    if [ $count -eq 0 ] ; then
+    local is_contains=false
+    if [ -f $sshconfig_path ] ; then
+        local count=$(grep -c "$host_info" $sshconfig_path)
+        if [ $count -eq 0 ] ; then
+            is_contains=false
+        else
+            is_contains=true
+        fi
+    else
+        is_contains=false
+    fi
+    if [ $is_contains = false ] ; then
         echo $host_info >> $sshconfig_path
         echo "\tHostname $url" >> $sshconfig_path
         echo "\tUser git" >> $sshconfig_path
@@ -95,9 +135,10 @@ function install_process_git_organization() {
         local user_name=`cat $config_path | jq -r ".git_organization | .[] | select(.name==\"${n}\") | .user_name"`
         local user_email=`cat $config_path | jq -r ".git_organization | .[] | select(.name==\"${n}\") | .user_email"`
         local private_token=`cat $config_path | jq -r ".git_organization | .[] | select(.name==\"${n}\") | .private_token"`
-        local include_paths=`cat $config_path | jq -r ".git_organization | .[] | select(.name==\"${n}\") | .include_paths"`
+        local include_paths=`cat $config_path | jq -r ".git_organization | .[] | select(.name==\"${n}\") | .include_paths[]"`
+        
         # create git config
-        create_git_config $n $url $user_name $user_email $include_paths
+        create_git_config $n $url $user_name $user_email "${include_paths[@]}"
 
         # ssh keygen
         local save_path="$HOME/.ssh/id_rsa_$n"
@@ -107,3 +148,5 @@ function install_process_git_organization() {
         register_ssh_key $n $url $private_token
     done
 }
+
+#install_process_git_organization ../config.json
