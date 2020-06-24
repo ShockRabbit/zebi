@@ -4,6 +4,7 @@ function install_process_nodenv() {
     local config_path=$1
     
     brew install nodenv
+    nodenv init
 
     local versions=`cat $config_path | jq -r ".nodenv | .versions[].version"`
     local global=`cat $config_path | jq -r ".nodenv | global"`
