@@ -3,7 +3,8 @@
 function install_process_android_ndk() {
     local config_path=$1
 
-    local location=`cat $config_path | jq -r ".android_ndk | .location"`
+    local location_str=`cat $config_path | jq -r ".android_ndk | .location"`
+    local location=$(eval echo $location_str)
     local download_url=`cat $config_path | jq -r ".android_ndk | .download_url"`
     local ndk_temp_path=$temp_path/android_ndk
     local ndk_zip_path=$ndk_temp_path/ndk.zip

@@ -10,7 +10,8 @@ function install_process_android_sdk() {
 
     local sdktools_temp_path=$temp_path/android_sdk_tools
     local sdktools_zip_path=$sdktools_temp_path/sdk-tools.zip
-    local location=`cat $config_path | jq -r ".android_sdk | .location"`
+    local location_str=`cat $config_path | jq -r ".android_sdk | .location"`
+    local location=$(eval echo $location_str)
     local download_url=`cat $config_path | jq -r ".android_sdk | .download_url"`
     local sdk_api=`cat $config_path | jq -r ".android_sdk | .sdk_api"`
     local build_tools=`cat $config_path | jq -r ".android_sdk | .build_tools"`

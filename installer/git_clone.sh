@@ -25,6 +25,6 @@ function install_process_git_clone() {
         local recursive=`cat $config_path | jq -r ".git_clones | .[] | select(.ssh_url==\"${u}\") | .recursive"`
         local dest_path=`cat $config_path | jq -r ".git_clones | .[] | select(.ssh_url==\"${u}\") | .dest_path"`
 
-        git_clone $u $branch $recursive $dest_path
+        git_clone $u $branch $recursive $(eval echo $dest_path)
     done
 }
