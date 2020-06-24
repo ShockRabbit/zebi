@@ -30,25 +30,39 @@ expect eof
 EOF
 }
 
+function create_ssh_key_data() {
+    JSON_STRING=$( jq -n \
+                      --arg t "$1" \
+                      --arg k "$2" \
+					  '{ title: $t, key: $k }' )
+	echo $JSON_STRING
+}
+
 function register_ssh_key() {
     local name=$1
     local url=$2
     local private_token=$3
 
-    local ssh_path=$HOME/.ssh/id_rsa_$name
-    local title="$USER_$name"
+    local ssh_path=$HOME/.ssh/id_rsa_$name.pub
+    local title="${USER}_${name}"
     local ssh_key=$(cat $ssh_path)
 
     if [[ $url == *"github.com"* ]] ; then
         echo "-----------------------------------------------------"
-        echo "register ssh key to $url"
+        echo "register ssh key to $url (title: $title)"
+        echo "private token : $private_token"
+        echo "ssh key : $ssh_key"
         echo "-----------------------------------------------------"
-        curl -u "username:$private_token" "https://api.github.com/user/keys?title=$title&key=ssh_key"
+        ssh_key_data=$(create_ssh_key_data $title "${ssh_key}")
+        curl -i -H "Authorization: token $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://api.github.com/user/keys"
     elif [[ $url == *"gitlab"* ]] ; then
         echo "-----------------------------------------------------"
-        echo "register ssh key to $url"
+        echo "register ssh key to $url (title: $title)"
+        echo "private token : $private_token"
+        echo "ssh key : $ssh_key"
         echo "-----------------------------------------------------"
-        curl --header "Private-Token: $private_token" "https://$url/api/v4/users/keys?title=$title&key=$ssh_key"
+        ssh_key_data=$(create_ssh_key_data $title "${ssh_key}")
+		curl -i -H "Private-Token: $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://$url/api/v4/user/keys"
     else
         echo "-----------------------------------------------------"
         echo "[register ssh key] not supported : $url"
@@ -149,4 +163,4 @@ function install_process_git_organization() {
     done
 }
 
-#install_process_git_organization ../config.json
+install_process_git_organization ../config.json
