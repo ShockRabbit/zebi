@@ -7,7 +7,9 @@
 - zero-base install until enable develop
     - buy mac -> unboxing -> run installer -> enjoy develop
 - installable various environment by config file
+---
 ![goal_01](./readme_img/goal_01.png)
+---
 ![goal_02](./readme_img/goal_02.png)
 
 # Usage
