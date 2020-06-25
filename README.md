@@ -5,10 +5,10 @@
 
 # Goal
 - zero-base install until enable develop
-[!goal_01](./readme_img/goal_01.png)
     - buy mac -> unboxing -> run installer -> enjoy develop
 - installable various environment by config file
-[!goal_02](./readme_img/goal_02.png)
+![goal_01](./readme_img/goal_01.png)
+![goal_02](./readme_img/goal_02.png)
 
 # Usage
 - writing config file
