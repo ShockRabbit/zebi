@@ -116,7 +116,7 @@
         }
     ],
     "brew": {
-        "tabs": [
+        "taps": [
             "AdoptOpenJDK/openjdk",
             "homebrew/cask-fonts"
         ],
@@ -135,10 +135,8 @@
             "tmux",
             "neovim",
             "ripgrep",
-            "mps-youtube",
             "thefuck",
-            "tree",
-            "doxygen --with-dot --with-doxywizard --with-libclang"
+            "tree"
         ],
         "casks": [
             "osxfuse",
