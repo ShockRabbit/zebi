@@ -163,4 +163,4 @@ function install_process_git_organization() {
     done
 }
 
-install_process_git_organization ../config.json
+#install_process_git_organization ../config.json
