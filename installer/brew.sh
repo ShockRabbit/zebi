@@ -18,7 +18,7 @@ function install_process_brew() {
     local brew_taps=`cat $config_path | jq -r ".brew | .taps[]"`
     for t in $brew_taps; do
         echo "-----------------------------------------"
-        echo "brew tab $t"
+        echo "brew tap $t"
         echo "-----------------------------------------"
         brew tap $t
     done
