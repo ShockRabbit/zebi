@@ -5,7 +5,7 @@
 # Goal
 - zero-base install
     - buy mac -> unboxing -> run installer -> enjoy develop
-- install various environment by config file
+- install various environment by various config file
 
 # Usage
 - write config file
@@ -24,6 +24,7 @@
 # Support List
 - brew
 - mas
+    - :bangbang: support only ``mas lucky``. this mean support only reinstall.
 - pyenv (+ pyenv-virtualenv)
 - rbenv
 - nodenv

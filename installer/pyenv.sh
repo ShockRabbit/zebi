@@ -16,10 +16,11 @@ function install_process_pyenv() {
     #
     # add pyenv init to shell
     # FIXME 추후 shell type 에 따라서 수정할 설정 파일을 바꿔야할 듯..
-    echo 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
+    shell_config_file=$(get_shell_config_file)
+    echo 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $shell_config_file
     # Restart shell
     #exec "$SHELL"
-    source ~/.bash_profile
+    source $shell_config_file
     # install python build dependencies (optional, but recommended)
     brew install openssl || log_error "[pyenv] fail :: brew install openssl"
     brew install readline || log_error "[pyenv] fail :: brew install readline"

@@ -58,10 +58,7 @@ function install_process_unity3d() {
     for entry in /Volumes/*; do
         if [[ "$entry" == *"Unity Hub"* ]]; then
             echo "$entry"
-            #FIXME 미리 root pw 받아서 막히지 않도록 처리 필요
-            echo "--------------------------------------------"
-            echo "Install Unity Hub"
-            echo "--------------------------------------------"
+            log "Install Unity Hub"
             expect_install_unityhub "${entry}" $pw
             hdiutil unmount "${entry}"
         fi

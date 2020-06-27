@@ -15,10 +15,11 @@ function install_process_nodenv() {
     #
     # add nodenv init to shell
     # FIXME 추후 shell type 에 따라서 수정할 설정 파일을 바꿔야할 듯..
-    echo 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' >> ~/.bash_profile
+    shell_config_file=$(get_shell_config_file)
+    echo 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' >> $shell_config_file
     # Restart shell
     #exec "$SHELL"
-    source ~/.bash_profile
+    source $shell_config_file
     ###################################################################################
 
     local versions=`cat $config_path | jq -r ".nodenv | .versions[].version"`

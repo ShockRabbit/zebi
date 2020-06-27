@@ -66,7 +66,6 @@ function register_ssh_key() {
     else
         log_error "[git_organization] register ssh key not supported : $url"
     fi
-    #FIXME 실패했을 때는 git 과 관련된 부분은 다 실패할 것.. 재시도나 끊거나 등 대응 필요
 }
 
 function create_git_config() {
