@@ -1,9 +1,14 @@
 #!/bin/sh
 
+#source util.sh
+
 function install_process_nodenv() {
     local config_path=$1
+
+    echo_title "Install Process nodenv"
     
-    brew install nodenv node-build
+    brew install nodenv || log_error "[nodenv] fail :: brew install nodenv"
+    brew install node-build || log_error "[nodenv] fali :: brew install node-build"
 
     ###################################################################################
     # Setup
@@ -20,14 +25,17 @@ function install_process_nodenv() {
     local global=`cat $config_path | jq -r ".nodenv | .global"`
 
     for v in $versions; do
-        nodenv install $v
+        log "nodenv install $v"
+        nodenv install $v || log_error "[nodenv] fail :: nodenv install $v"
         nodenv local $v
         local packages=`cat $config_path | jq -r ".nodenv | .versions[] | select(.version==\"${v}\") | .packages[]"`
         for p in $packages; do
-            npm install $p -g
+            log "npm install $p -g"
+            npm install $p -g || log_error "[nodenv] fail :: npm install $p -g"
         done
     done
-    nodenv global $global
+    log "nodenv global $global"
+    nodenv global $global || log_error "[nodenv] fail :: nodenv global $global"
     nodenv local $global
 }
 

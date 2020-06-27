@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#source util.sh
+
 function safe_delete() {
     local path=$1
     if [ -f $path ]; then
@@ -14,9 +16,7 @@ function ssh_keygen() {
     safe_delete $save_path
     safe_delete $pub_file
 
-    echo "-----------------------------------------------------"
-    echo "generate ssh key (${email}) : ${save_path}"
-    echo "-----------------------------------------------------"
+    log "generate ssh key (${email}) : ${save_path}"
 expect <<EOF
 set timeout 1
 spawn ssh-keygen -t rsa -b 2048 -C $email
@@ -48,25 +48,23 @@ function register_ssh_key() {
     local ssh_key=$(cat $ssh_path)
 
     if [[ $url == *"github.com"* ]] ; then
-        echo "-----------------------------------------------------"
-        echo "register ssh key to $url (title: $title)"
-        echo "private token : $private_token"
-        echo "ssh key : $ssh_key"
-        echo "-----------------------------------------------------"
+        log "-----------------------------------------------------"
+        log "register ssh key to $url (title: $title)"
+        log "private token : $private_token"
+        log "ssh key : $ssh_key"
+        log "-----------------------------------------------------"
         ssh_key_data=$(create_ssh_key_data $title "${ssh_key}")
-        curl -i -H "Authorization: token $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://api.github.com/user/keys"
+        curl -f -i -H "Authorization: token $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://api.github.com/user/keys" || log_error "[git_organization] fail register ssh key to $url (title: $title)"
     elif [[ $url == *"gitlab"* ]] ; then
-        echo "-----------------------------------------------------"
-        echo "register ssh key to $url (title: $title)"
-        echo "private token : $private_token"
-        echo "ssh key : $ssh_key"
-        echo "-----------------------------------------------------"
+        log "-----------------------------------------------------"
+        log "register ssh key to $url (title: $title)"
+        log "private token : $private_token"
+        log "ssh key : $ssh_key"
+        log "-----------------------------------------------------"
         ssh_key_data=$(create_ssh_key_data $title "${ssh_key}")
-		curl -i -H "Private-Token: $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://$url/api/v4/user/keys"
+		curl -f -i -H "Private-Token: $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://$url/api/v4/user/keys" || log_error "[git_organization] fail register ssh key to $url (title: $title)"
     else
-        echo "-----------------------------------------------------"
-        echo "[register ssh key] not supported : $url"
-        echo "-----------------------------------------------------"
+        log_error "[git_organization] register ssh key not supported : $url"
     fi
     #FIXME 실패했을 때는 git 과 관련된 부분은 다 실패할 것.. 재시도나 끊거나 등 대응 필요
 }
@@ -82,9 +80,7 @@ function create_git_config() {
     local file_name=.gitconfig_$name
     local config_path=$HOME/$file_name
 
-    echo "------------------------------------------------------------"
-    echo "create ${file_name} & add Host info to ~/.ssh/config"
-    echo "------------------------------------------------------------"
+    log "create ${file_name} & add Host info to ~/.ssh/config"
 
     # create .gitconfig_$name
     safe_delete $config_path
@@ -100,17 +96,13 @@ function create_git_config() {
     local gitconfig_path=$HOME/.gitconfig
     for p in $include_paths; do
         local real_path=$(eval echo $p)
-        echo "---------------------------"
-        echo "include path : $real_path"
-        echo "---------------------------"
+        log "include path : $real_path"
         mkdir -p $real_path
         local include_info="[includeIf \"gitdir:$real_path/\"]"
-        echo "include info: $include_info"
-        echo "---------------------------"
+        log "include info: $include_info"
         local count=$(grep -cF "$include_info" $gitconfig_path)
         if [ $count -eq 0 ] ; then
-            echo "add include_info : $include_info"
-            echo "---------------------------"
+            log "add include_info : $include_info"
             echo $include_info >> $gitconfig_path
             echo "\tpath = $file_name" >> $gitconfig_path
         fi
@@ -142,6 +134,8 @@ function create_git_config() {
 
 function install_process_git_organization() {
     local config_path=$1
+
+    echo_title "Install Process git_organization"
 
     local git_names=`cat $config_path | jq -r ".git_organization | .[].name"`
     for n in $git_names; do

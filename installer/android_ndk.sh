@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#source util.sh
+
 function install_process_android_ndk() {
     local config_path=$1
 
@@ -16,11 +18,11 @@ function install_process_android_ndk() {
         mkdir -p $location
     fi
 
-    echo "-----------------------------------------------------"
-    echo "Download Android NDK from ${download_url} to ${location}"
-    echo "-----------------------------------------------------"
-    wget -O $ndk_zip_path $download_url
-    unzip $ndk_zip_path -d $location
+    echo_title "Install Process android_ndk"
+    log "Download Android NDK from ${download_url} to ${location}"
+
+    wget -O $ndk_zip_path $download_url || log_error "[android_ndk] download fail :: $download_url to $ndk_zip_path"
+    unzip $ndk_zip_path -d $location || log_error "[android_ndk] unzip fail :: $ndk_zip_path to $location_str"
 }
 
-install_process_android_ndk ../config.json
+#install_process_android_ndk ../config.json

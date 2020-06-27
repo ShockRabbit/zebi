@@ -1,9 +1,14 @@
 #!/bin/sh
 
+#source util.sh
+
 function install_process_rbenv() {
     local config_path=$1
     
-    brew install rbenv ruby-build
+    echo_title "Install Process rbenv"
+
+    brew install rbenv || log_error "[rbenv] fail :: brew install rbenv"
+    brew install ruby-build || log_error "[rbenv] fail :: brew install ruby-build"
     
     ###################################################################################
     # Setup
@@ -19,20 +24,16 @@ function install_process_rbenv() {
     local global=`cat $config_path | jq -r ".rbenv | .global"`
 
     for v in $versions; do
-        echo "---------------------------------"
-        echo "rbenv install $v"
-        echo "---------------------------------"
-        rbenv install $v
-        rbenv local $v
+        log "rbenv install $v"
+        rbenv install $v || log_error "[rbenv] fail :: rbenv install $v"
+        rbenv local $v || log_error "[rbenv] fail :: rbenv local $v"
         local packages=`cat $config_path | jq -r ".rbenv | .versions[] | select(.version==\"${v}\") | .packages[]"`
         for p in $packages; do
-            echo "---------------------------------"
-            echo "gem install $p"
-            echo "---------------------------------"
-            gem install $p
+            log "gem install $p"
+            gem install $p || log_error "[rbenv] fail :: gem install $p"
         done
     done
-    rbenv global $global
+    rbenv global $global || log_error "[rbenv] fail :: rbenv global $global"
     rbenv local $global
 }
 

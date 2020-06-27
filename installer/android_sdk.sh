@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#source util.sh
+
 function install_process_android_sdk() {
     local config_path=$1
 
@@ -25,13 +27,13 @@ function install_process_android_sdk() {
         mkdir -p $location
     fi
 
-    echo "-----------------------------------------------------"
-    echo "Download Android SDK from ${download_url} to ${location}"
-    echo "-----------------------------------------------------"
-    wget -O $sdktools_zip_path $download_url
-    unzip $sdktools_zip_path -d $location
+    echo_title "Install Process android_sdk"
+    log "Download Android SDK from ${download_url} to ${location}"
+
+    wget -O $sdktools_zip_path $download_url || log_error "[android_sdk] sdktools download fail :: $download_url to $sdk_zip_path"
+    unzip $sdktools_zip_path -d $location || log_error "[android_ndk] unzip fail :: $sdktools_zip_path to $location_str"
     yes | $sdkmanager --licenses
-    $sdkmanager "platform-tools" "platforms;android-$sdk_api" "build-tools;$build_tools"
+    $sdkmanager "platform-tools" "platforms;android-$sdk_api" "build-tools;$build_tools" || log_error "[android_sdk] install fail \(platform-tools, platforms;android-$sdk_api, build_tools;$build_tools\)"
 }
 
 #install_process_android_sdk ../config.json

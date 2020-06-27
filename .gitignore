@@ -3,3 +3,4 @@ tags
 *.DS_Store
 config.json
 installer/test.sh
+log_error.txt

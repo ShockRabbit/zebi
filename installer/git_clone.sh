@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#source util.sh
+
 function git_clone() {
     local url=$1
     local branch=$2
@@ -12,16 +14,16 @@ function git_clone() {
     fi
     local branch_opt="-b ${branch}"
 
-    echo "-----------------------------------------------------------------------"
-    echo "git clone ${recursive_opt} ${branch_opt} ${url} ${dest_path}"
-    echo "-----------------------------------------------------------------------"
+    log "git clone ${recursive_opt} ${branch_opt} ${url} ${dest_path}"
 
-    git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path
+    git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path || log_error "[git_clone] fail git clone $recursive_opt $branch_opt $url $dest_path"
 }
 
 
 function install_process_git_clone() {
     local config_path=$1
+
+    echo_title "Install Process git_clone"
 
     local git_repo_urls=`cat $config_path | jq -r ".git_clone | .[].ssh_url"`
     for u in $git_repo_urls; do
