@@ -2,6 +2,15 @@
 
 #source util.sh
 
+function git_clone_with_expect() {
+    local cmd=$(eval echo $1)
+expect <<EOF
+set timeout 120
+spawn $cmd
+expect "Are you sure you want to continue connecting (yes/no)?" { send "yes\n"; expect eof }
+EOF
+}
+
 function git_clone() {
     local url=$1
     local branch=$2
@@ -16,7 +25,10 @@ function git_clone() {
 
     log "git clone ${recursive_opt} ${branch_opt} ${url} ${dest_path}"
 
-    git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path || log_error "[git_clone] fail git clone $recursive_opt $branch_opt $url $dest_path"
+    # expect 써야해서 log_error 는 포기 ..
+    #git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path || log_error "[git_clone] fail git clone $recursive_opt $branch_opt $url $dest_path"
+    local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path)
+    git_clone_with_expect $cmd
 }
 
 

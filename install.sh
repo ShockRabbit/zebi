@@ -2,6 +2,18 @@
 
 source util.sh
 
+function install_brew_with_expect_pw() {
+    local pw=$1
+    local cmd=$([ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)")
+expect <<EOF
+set timeout 120
+spawn $cmd
+expect "Password:" { send "$pw\n"; expect eof }
+expect "Press RETURN to continue" { send "\n"; expect eof }
+expect "Password:" { send "$pw\n"; expect eof }
+EOF
+}
+
 function request_login_mas() {
     # Request login to Mac App Store
     echo_title "Login to Mac App Store"
@@ -12,10 +24,11 @@ function request_login_mas() {
 
 function prepare_install() {
     local config_path=$1
+    local pw=$2
     
     # 설치를 위해 필요한 것들을 설치한다. (brew, git, jq)
     # install Homebrew
-    [ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    install_brew_with_expect_pw pw 
 
     # install git
     brew install git
@@ -48,7 +61,7 @@ echo_title "enter password for install automation"
 read -rsp "password:" pw
 echo "\n"
 
-prepare_install $config_path
+prepare_install $config_path $pw
 
 # execute install process by order
 order=`cat $config_path | jq -r ".order[]"`

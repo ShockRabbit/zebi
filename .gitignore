@@ -2,5 +2,6 @@ tags
 *.swp
 *.DS_Store
 config.json
+config_cx.json
 installer/test.sh
 log_error.txt
