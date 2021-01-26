@@ -3,5 +3,6 @@ tags
 *.DS_Store
 config.json
 config_cx.json
+config_bm.json
 installer/test.sh
 log_error.txt
