@@ -5,18 +5,23 @@ LIGHT_GREEN="\033[1;32m"
 LIGHT_CYAN="\033[1;36m"
 NO_COLOR="\033[0m"
 
-BORDER_LINE="#####################################################################################################################################################"
+BORDER_LINE="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+PADDING="                  "
+BORDER_LT="┏"
+BORDER_RT="┓"
+BORDER_LB="┗"
+BORDER_RB="┛"
 PADDING="                  "
 
 function echo_title() {
     str=$1
     len=${#str}
     padding_len=${#PADDING}
-    width=2+len+padding_len*2
+    width=len+padding_len*2
     
-    echo "${LIGHT_GREEN}${BORDER_LINE:0:$width}"
-    echo "#${PADDING}${str}${PADDING}#"
-    echo "${BORDER_LINE:0:$width}${NO_COLOR}"
+    echo "${LIGHT_GREEN}${BORDER_LT}${BORDER_LINE:0:$width}${BORDER_RT}"
+    echo "┃${PADDING}${str}${PADDING}┃"
+    echo "${BORDER_LB}${BORDER_LINE:0:$width}${BORDER_RB}${NO_COLOR}"
 }
 
 function log() {
