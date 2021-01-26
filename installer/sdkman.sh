@@ -20,7 +20,7 @@ function install_process_sdkman() {
             log "Install ${n}::${v}"
             sdk install $n $v || log_error "[sdkman] fail :: sdk install $n $v"
         done
-        log "$set ${n}\'s default version: ${v}"
+        log "$set ${n}'s default version: ${v}"
         sdk default $n $default || log_error "[sdkman] fail :: sdk default $n $default"
     done
 }

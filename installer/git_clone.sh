@@ -14,11 +14,11 @@ EOF
 function git_clone() {
     local url=$1
     local branch=$2
-    local recursive=$3
+    local recursive=$3  # 1(true) or 0(false)
     local dest_path=$4
 
     local recursive_opt=""
-    if [ $recursive==true ] ; then
+    if [ $recursive -eq 1 ]; then
         recursive_opt="--recursive"
     fi
     local branch_opt="-b ${branch}"
@@ -40,7 +40,7 @@ function install_process_git_clone() {
     local git_repo_urls=`cat $config_path | jq -r ".git_clone | .[].ssh_url"`
     for u in $git_repo_urls; do
         local branch=`cat $config_path | jq -r ".git_clone | .[] | select(.ssh_url==\"${u}\") | .branch"`
-        local recursive=`cat $config_path | jq -r ".git_clone | .[] | select(.ssh_url==\"${u}\") | .recursive"`
+        local recursive=`cat $config_path | jq -r "if .git_clone | .[] | select(.ssh_url==\"${u}\") | .recursive than 1 else 0 end"`
         local dest_path=`cat $config_path | jq -r ".git_clone | .[] | select(.ssh_url==\"${u}\") | .dest_path"`
 
         git_clone $u $branch $recursive $(eval echo $dest_path)

@@ -47,7 +47,7 @@ function register_ssh_key() {
     local title="${USER}_${name}"
     local ssh_key=$(cat $ssh_path)
 
-    if [[ $url == *"github.com"* ]] ; then
+    if [[ $url == *"github.com"* ]]; then
         log "-----------------------------------------------------"
         log "register ssh key to $url (title: $title)"
         log "private token : $private_token"
@@ -55,7 +55,7 @@ function register_ssh_key() {
         log "-----------------------------------------------------"
         ssh_key_data=$(create_ssh_key_data $title "${ssh_key}")
         curl -f -i -H "Authorization: token $private_token" -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$ssh_key_data" "https://api.github.com/user/keys" || log_error "[git_organization] fail register ssh key to $url (title: $title)"
-    elif [[ $url == *"gitlab"* ]] ; then
+    elif [[ $url == *"gitlab"* ]]; then
         log "-----------------------------------------------------"
         log "register ssh key to $url (title: $title)"
         log "private token : $private_token"
@@ -86,7 +86,7 @@ function create_git_config() {
     echo "[user]" >> $config_path
     echo "\temail = $user_email" >> $config_path
     echo "\tname = $user_name" >> $config_path
-    if [ $url != "github.com" ] && [ $url != "gitlab.com" ] ; then
+    if [ $url != "github.com" ] && [ $url != "gitlab.com" ]; then
         echo "[url \"git@$url:\"]" >> $config_path
         echo "\tinsteadof = https://$url/" >> $config_path
     fi
@@ -100,7 +100,7 @@ function create_git_config() {
         local include_info="[includeIf \"gitdir:$real_path/\"]"
         log "include info: $include_info"
         local count=$(grep -cF "$include_info" $gitconfig_path)
-        if [ $count -eq 0 ] ; then
+        if [ $count -eq 0 ]; then
             log "add include_info : $include_info"
             echo $include_info >> $gitconfig_path
             echo "\tpath = $file_name" >> $gitconfig_path
@@ -111,9 +111,9 @@ function create_git_config() {
     local sshconfig_path=$HOME/.ssh/config
     local host_info="Host $url"
     local is_contains=false
-    if [ -f $sshconfig_path ] ; then
+    if [ -f $sshconfig_path ]; then
         local count=$(grep -c "$host_info" $sshconfig_path)
-        if [ $count -eq 0 ] ; then
+        if [ $count -eq 0 ]; then
             is_contains=false
         else
             is_contains=true
@@ -121,7 +121,7 @@ function create_git_config() {
     else
         is_contains=false
     fi
-    if [ $is_contains = false ] ; then
+    if [ $is_contains = false ]; then
         echo $host_info >> $sshconfig_path
         echo "\tHostname $url" >> $sshconfig_path
         echo "\tUser git" >> $sshconfig_path
