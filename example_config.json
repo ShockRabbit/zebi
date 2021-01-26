@@ -111,7 +111,7 @@
         {
             "ssh_url": "git@github.com:ShockRabbit/installer.git",
             "branch": "master",
-            "recursive": "false",
+            "recursive": false,
             "dest_path": "~/ShockRabbit/installer"
         }
     ],
