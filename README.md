@@ -11,8 +11,8 @@
 - write config file
 - run install script
     - ``sh install.sh``
-- input config file path
-- input password
+- enter your config file path
+- enter your password
 
 # How to write config file ?
 - write config for each [support list](#support-list)
@@ -24,7 +24,7 @@
 # Support List
 - brew
 - mas
-    - :bangbang: support only ``mas lucky``. this mean support only reinstall.
+    - :bangbang: support only ``mas lucky``. this means it only supports reinstall.
 - pyenv (+ pyenv-virtualenv)
 - rbenv
 - nodenv
@@ -34,6 +34,8 @@
 - android_sdk
 - android_ndk
 - sdkman
+- url download
+- unzip
 
 
 ---
