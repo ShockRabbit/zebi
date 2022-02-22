@@ -26,7 +26,7 @@ function install_process_brew() {
     local brew_casks=`cat $config_path | jq -r ".brew | .casks[]"`
     for c in $brew_casks; do
         log "brew cask install : $c"
-        cmd_with_expect_pw "brew cask install $c" $pw
+        cmd_with_expect_pw "brew install --cask $c" $pw
     done
     echo_title "Install Process brew :: brew install"
     local brew_brews=`cat $config_path | jq -r ".brew | .brews[]"`
