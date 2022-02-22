@@ -43,4 +43,4 @@
 # ToDO
 - [ ] 완전 첫 설치시 brew install 에서인지 password 입력하라고 뜨는 것 같다. expect 처리 필요 -> 작업은 완료. 테스트 필요
 - [ ] git 첫 clone 시 Are you sure you want to continue connecting (yes/no)? 에 대한 expect 처리 필요 -> 작업은 완료. 테스트 필요
-- [ ] cask 제대로 설치 안되던데... 확인 필요.
+- [ ] cask 제대로 설치 안되던데... 확인 필요. -> 작업은 완료. 테스트 필요
