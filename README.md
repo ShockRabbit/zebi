@@ -1,4 +1,5 @@
 # Intro
+- **ze**ro-**b**ase **i**nstaller
 - working with config file
 - tested on OSX
 
