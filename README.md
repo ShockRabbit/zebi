@@ -44,3 +44,18 @@
 - [ ] 완전 첫 설치시 brew install 에서인지 password 입력하라고 뜨는 것 같다. expect 처리 필요 -> 작업은 완료. 테스트 필요
 - [ ] git 첫 clone 시 Are you sure you want to continue connecting (yes/no)? 에 대한 expect 처리 필요 -> 작업은 완료. 테스트 필요
 - [ ] cask 제대로 설치 안되던데... 확인 필요. -> 작업은 완료. 테스트 필요
+- [ ] config 관리 기능 추가. 설치시 사용한 config 가 그대로 저장되어 이후 활용된다.
+    - show config
+    - edit config
+    - export config
+    - import config
+- [ ] 직접 install 하는 명령어 만들기. 이 명령어를 통하면 자동으로 config 에 추가되도록 한다.
+    - brew
+    - unity3d
+    - android_sdk
+    - android_ndk
+    - sdkman
+- [ ] uninstall 명령어 추가
+- [ ] pyenv 개선. 환경선언이 된 경로를 기준으로 영역이 설정되므로 그에 맞게 변화 필요. global 대응이 가능한지보고 global 만 대응한다.
+- [ ] rbenv, nodenv 도 같은 관점에서 검토
+- [ ] git_organization, git_clone 검토
