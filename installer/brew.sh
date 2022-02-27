@@ -22,10 +22,10 @@ function install_process_brew() {
         log "brew tap $t"
         brew tap $t || log_error "[brew] fail brew tap $t"
     done
-    echo_title "Install Process brew :: brew cask install"
+    echo_title "Install Process brew :: brew install --cask"
     local brew_casks=`cat $config_path | jq -r ".brew | .casks[]"`
     for c in $brew_casks; do
-        log "brew cask install : $c"
+        log "brew install --cask : $c"
         cmd_with_expect_pw "brew install --cask $c" $pw
     done
     echo_title "Install Process brew :: brew install"
