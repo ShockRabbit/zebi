@@ -52,4 +52,4 @@
 - [X] 명령어 wrapping 하기. install, uninstall 에 따라 config 에 추가, 삭제 되도록 한다.
     - [X] brew 만 우선 지원
     - [X] install, uninstall 시 --ignore-config 옵션으로 config 무시하는 옵션 추가
-    - [X] brew 는 tap 도 지원 필요
+    - [X] brew 는 tap, untap 도 지원 필요
