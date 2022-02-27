@@ -7,3 +7,4 @@ config_bm.json
 installer/test.sh
 log_error.txt
 test
+*__pycache__
