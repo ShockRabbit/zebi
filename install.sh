@@ -28,7 +28,9 @@ function prepare_install() {
     
     # 설치를 위해 필요한 것들을 설치한다. (brew, git, jq)
     # install Homebrew
-    install_brew_with_expect_pw pw 
+    #install_brew_with_expect_pw $pw
+    # 왜인지 잘 모르겠지만 expect 가 안먹는다 ... 별 수 없이 처음에는 비번 넣고 엔터키 쳐준다.
+    [ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
     # install git
     brew install git
