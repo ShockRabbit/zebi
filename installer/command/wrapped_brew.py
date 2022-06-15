@@ -1,35 +1,28 @@
 import sys
 import subprocess
 from config_manager import ConfigHelper
+from util import Utility
 
 
 def init_brew_config():
+    brew_config_template = {
+            'taps': [
+
+            ],
+            'casks': [
+
+            ],
+            'brews': [
+
+            ]
+    }
     synced_config = ConfigHelper.get_synced_config()
     if 'brew' not in synced_config.keys():
-        synced_config['brew'] = {
-                'taps': [
+        synced_config['brew'] = brew_config_template.copy()
 
-                ],
-                'casks': [
-
-                ],
-                'brews': [
-
-                ]
-        }
     installed_config = ConfigHelper.get_installed_config()
     if 'brew' not in installed_config.keys():
-        installed_config['brew'] = {
-                'taps': [
-
-                ],
-                'casks': [
-
-                ],
-                'brews': [
-
-                ]
-        }
+        installed_config['brew'] = brew_config_template.copy()
 
 def add_item(path, item):
     synced = ConfigHelper.get_synced_item(path)
@@ -41,9 +34,11 @@ def add_item(path, item):
 
 def remove_item(path, item):
     synced = ConfigHelper.get_synced_item(path)
-    synced.remove(item)
+    if item in synced:
+        synced.remove(item)
     installed = ConfigHelper.get_installed_item(path)
-    installed.remove(item)
+    if item in installed:
+        installed.remove(item)
     ConfigHelper.save_synced_config()
     ConfigHelper.save_installed_config()
 
@@ -91,14 +86,14 @@ def post_untap(params):
         return
     remove_item('brew/taps', tap)
 
-def execute_cmd(cmd_str, verbose=True):
-    stdout_target = sys.stdout if verbose else subprocess.PIPE
-    proc = subprocess.Popen(cmd_str, shell=True, stdout=stdout_target, stderr=stdout_target)
-    out, err = proc.communicate()
-    if proc.returncode == 0:
-        return True
-    else:
-        return False
+# def execute_cmd(cmd_str, verbose=True):
+#     stdout_target = sys.stdout if verbose else subprocess.PIPE
+#     proc = subprocess.Popen(cmd_str, shell=True, stdout=stdout_target, stderr=stdout_target)
+#     out, err = proc.communicate()
+#     if proc.returncode == 0:
+#         return True
+#     else:
+#         return False
 
 
 post_callbacks = {
@@ -123,7 +118,7 @@ elif command in post_callbacks.keys():
     argv = ['brew', command]
     argv.extend(params)
     cmd_str = ' '.join(argv)
-    result = execute_cmd(cmd_str)
+    result = Utility.execute_cmd(cmd_str)
     if result:
         post_callbacks[command](params)
 else:
