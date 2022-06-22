@@ -47,6 +47,18 @@ function get_shell_config_file() {
     echo $path
 }
 
+function safe_append_config() {
+    config_line=$1
+    shell_config_file=$2
+
+    shell_config_file=./test_file
+    if grep $config_line $shell_config_file; then
+        echo "${config_line} already exist in ${shell_config_file}"
+    else
+        echo $config_line >> $shell_config_file
+    fi
+}
+
 
 if [ -f "log_error.txt" ]; then
     rm log_error.txt

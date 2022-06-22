@@ -14,9 +14,13 @@ function install_process_rbenv() {
     # Setup
     #
     # add rbenv init to shell
-    # FIXME 추후 shell type 에 따라서 수정할 설정 파일을 바꿔야할 듯..
+    rbenv init
+
+    # add settings to shell config
     shell_config_file=$(get_shell_config_file)
-    echo 'if command -v rbenv 1>/dev/null 2>&1; then\n  eval "$(rbenv init -)"\nfi' >> $shell_config_file
+    safe_append_config 'if command -v rbenv 1>/dev/null 2>&1; then\n  eval "$(rbenv init -)"\nfi' $shell_config_file
+    safe_append_config 'export PATH="$HOME/.rbenv/bin:$PATH"' $shell_config_file
+
     # Restart shell
     source $shell_config_file
     ###################################################################################
@@ -26,7 +30,11 @@ function install_process_rbenv() {
 
     for v in $versions; do
         log "rbenv install $v"
-        rbenv install $v || log_error "[rbenv] fail :: rbenv install $v"
+        if [ -d "$HOME/.rbenv/versions/${v}" ]; then
+            log "already has ruby version ${v}"
+        else
+            rbenv install $v || log_error "[rbenv] fail :: rbenv install $v"
+        fi
         rbenv local $v || log_error "[rbenv] fail :: rbenv local $v"
         local packages=`cat $config_path | jq -r ".rbenv | .versions[] | select(.version==\"${v}\") | .packages[]"`
         for p in $packages; do
