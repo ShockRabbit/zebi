@@ -53,3 +53,14 @@
     - [X] brew 만 우선 지원
     - [X] install, uninstall 시 --ignore-config 옵션으로 config 무시하는 옵션 추가
     - [X] brew 는 tap, untap 도 지원 필요
+- [X] 여러개의 config 를 차례로 install 가능하도록 처리 (config merge or installer 에서 대응)
+    - 우선 최소한 pyenv, rbenv, nodenv, git_organization, brew 는 대응 가능
+- [X] gitlab bitmango 계정으로 되어있는 것 p1s 로 변경
+- [X] gitlab group download 기능
+- [X] github user download 기능
+- [X] pyenv, rbenv, nodenv, brew 바뀐 인터페이스 적용
+- [X] pyenv, rbenv, nodenv 바뀐 설정 대응 (zebi 는 공식적으로는 fish 는 지원하지 않는다. fish 관련 설정은 알아서 dotfiles 등을 통해서 처리)
+
+
+- 사실 하지말았어야할 프로젝트. 반복되는 횟수가 적기 때문에, 투자되는 시간에비해 이득이 너무 적다.
+- 설치보다는 백업이 용이한 구조를 갖추는데 신경쓰는게 그나마 낫다
