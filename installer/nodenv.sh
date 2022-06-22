@@ -17,8 +17,8 @@ function install_process_nodenv() {
     
     # add settings to shell config
     shell_config_file=$(get_shell_config_file)
-    echo 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' >> $shell_config_file
-    echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> $shell_config_file
+    safe_append_config 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' $shell_config_file
+    safe_append_config 'export PATH="$HOME/.nodenv/bin:$PATH"' $shell_config_file
     # Restart shell
     #exec "$SHELL"
     source $shell_config_file
