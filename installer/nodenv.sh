@@ -13,10 +13,12 @@ function install_process_nodenv() {
     ###################################################################################
     # Setup
     #
-    # add nodenv init to shell
-    # FIXME 추후 shell type 에 따라서 수정할 설정 파일을 바꿔야할 듯..
+    nodenv init
+    
+    # add settings to shell config
     shell_config_file=$(get_shell_config_file)
     echo 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' >> $shell_config_file
+    echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> $shell_config_file
     # Restart shell
     #exec "$SHELL"
     source $shell_config_file
@@ -27,7 +29,11 @@ function install_process_nodenv() {
 
     for v in $versions; do
         log "nodenv install $v"
-        nodenv install $v || log_error "[nodenv] fail :: nodenv install $v"
+        if [ -d "$HOME/.nodenv/versions/${v}" ]; then
+            log "already has node version ${v}"
+        else
+            nodenv install $v || log_error "[nodenv] fail :: nodenv install $v"
+        fi
         nodenv local $v
         local packages=`cat $config_path | jq -r ".nodenv | .versions[] | select(.version==\"${v}\") | .packages[]"`
         for p in $packages; do
