@@ -7,7 +7,7 @@ function install_process_android_sdk() {
 
     if [ ! -d "$JAVA_HOME" ]; then
         brew tap AdoptOpenJDK/openjdk
-        brew cask install adoptopenjdk8
+        brew install --cask adoptopenjdk8
     fi
 
     local temp_path=./temp_for_install
