@@ -3,6 +3,11 @@
 #source util.sh
 
 function install_process_android_sdk() {
+    is_wget_exist=$(is_exist_cmd wget)
+    if [[ $result != "exist" ]]; then
+        brew install wget
+    fi
+
     local config_path=$1
 
     if [ ! -d "$JAVA_HOME" ]; then

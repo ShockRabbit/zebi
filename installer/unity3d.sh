@@ -25,6 +25,11 @@ EOF
 }
 
 function install_process_unity3d() {
+    is_wget_exist=$(is_exist_cmd wget)
+    if [[ $result != "exist" ]]; then
+        brew install wget
+    fi
+
     local config_path=$1
     local pw=$2
 
