@@ -87,7 +87,7 @@ function install_process_git_clone() {
         if [[ $type == "repository" ]]; then
             local ssh_url=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .ssh_url"`
             local branch=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .branch"`
-            local recursive=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .recursive than 1 else 0 end"`
+            local recursive=`cat $config_path | jq -r "if .git_clone | .[] | select(.name==\"${n}\") | .recursive then 1 else 0 end"`
             local dest_path=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .dest_path"`
             git_clone $ssh_url $branch $recursive $(eval echo $dest_path)
         elif [[ $type == "gitlab-group" ]]; then
@@ -95,14 +95,14 @@ function install_process_git_clone() {
             local private_token=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .private_token"`
             local root_url=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .root_url"`
             local branch=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .branch"`
-            local recursive=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .recursive than 1 else 0 end"`
+            local recursive=`cat $config_path | jq -r "if .git_clone | .[] | select(.name==\"${n}\") | .recursive then 1 else 0 end"`
             local dest_path=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .dest_path"`
             gitlab_group_clone $group_id $private_token $root_url $branch $recursive $(eval echo $dest_path)
         elif [[ $type == "github-user" ]]; then
             local user_name=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .user_name"`
             local private_token=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .private_token"`
             local branch=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .branch"`
-            local recursive=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .recursive than 1 else 0 end"`
+            local recursive=`cat $config_path | jq -r "if .git_clone | .[] | select(.name==\"${n}\") | .recursive then 1 else 0 end"`
             local dest_path=`cat $config_path | jq -r ".git_clone | .[] | select(.name==\"${n}\") | .dest_path"`
             github_user_clone $user_name $private_token $branch $recursive $(eval echo $dest_path)
         else
