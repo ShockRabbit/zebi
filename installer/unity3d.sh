@@ -50,7 +50,7 @@ function install_process_unity3d() {
     local unityhub_temp_path=$temp_path/unityhub
     local unityhub_dmg_path=$unityhub_temp_path/unityhub.dmg
     if [ ! -d "$unityhub_temp_path" ]; then
-        mkdir $unityhub_temp_path
+        mkdir -p $unityhub_temp_path
     fi
     wget -O $unityhub_dmg_path https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.dmg?_ga=2.94759900.1548080849.1564613839-779318739.1514968130 || log_error "[unity3d] fail :: fail download unityhub dmg"
     hdiutil attach $unityhub_dmg_path
