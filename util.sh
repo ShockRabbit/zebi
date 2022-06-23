@@ -58,6 +58,17 @@ function safe_append_config() {
     fi
 }
 
+function is_exist_cmd() {
+    target_cmd=$1
+    if ! command -v $target_cmd &> /dev/null; then
+        echo "not exist"
+        # return false
+    else
+        echo "exist"
+        # return true
+    fi
+}
+
 
 if [ -f "log_error.txt" ]; then
     rm log_error.txt
