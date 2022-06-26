@@ -10,7 +10,7 @@ function expect_install_unity() {
 expect <<EOF
 set timeout 12000
 spawn install-unity install $v -p $(eval echo $parms)
-expect "[yN]:"
+expect "Do you agree to the above EULA"
 send "y"
 expect "assword:"
 send "$pw\n"
