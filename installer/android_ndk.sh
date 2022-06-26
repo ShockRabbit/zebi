@@ -4,7 +4,7 @@
 
 function install_process_android_ndk() {
     is_wget_exist=$(is_exist_cmd wget)
-    if [[ $result != "exist" ]]; then
+    if [[ $is_wget_exist != "exist" ]]; then
         brew install wget
     fi
 
