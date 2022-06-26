@@ -93,6 +93,9 @@ function create_git_config() {
 
     # add includeIf path to .gitconfig
     local gitconfig_path=$HOME/.gitconfig
+    if [ ! -f $gitconfig_path ]; then
+        touch $gitconfig_path
+    fi
     for p in $include_paths; do
         local real_path=$(eval echo $p)
         log "include path : $real_path"
