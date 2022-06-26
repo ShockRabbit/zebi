@@ -2,12 +2,22 @@
 
 #source util.sh
 #|| log_error $error_msg
-function cmd_with_expect_pw() {
-    local cmd=$(eval echo $1)
+function install_with_expect_pw() {
+    local params=$1
     local pw=$2
 expect <<EOF
 set timeout 120
-spawn $cmd
+spawn brew install $(eval echo $params)
+expect "Password:" { send "$pw\n"; expect eof }
+EOF
+}
+
+function cask_install_with_expect_pw() {
+    local params=$1
+    local pw=$2
+expect <<EOF
+set timeout 120
+spawn brew install --cask $(eval echo $params)
 expect "Password:" { send "$pw\n"; expect eof }
 EOF
 }
@@ -25,14 +35,14 @@ function install_process_brew() {
     echo_title "Install Process brew :: brew install --cask"
     local brew_casks=`cat $config_path | jq -r ".brew | .casks[]"`
     for c in $brew_casks; do
-        log "brew install --cask : $c"
-        cmd_with_expect_pw "brew install --cask $c" $pw
+        log "brew install --cask $c"
+        cask_install_with_expect_pw "${c}" $pw
     done
     echo_title "Install Process brew :: brew install"
     local brew_brews=`cat $config_path | jq -r ".brew | .brews[]"`
     for b in $brew_brews; do
-        log "brew install : $b"
-        cmd_with_expect_pw "brew install $b " $pw
+        log "brew install $b"
+        install_with_expect_pw "${b}" $pw
     done
 }
 
