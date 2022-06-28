@@ -111,6 +111,9 @@ function create_git_config() {
     done
 
     # add Host info to ~/.ssh/config
+    if [ ! -d $HOME/.ssh ]; then
+        mkdir $HOME/.ssh
+    fi
     local sshconfig_path=$HOME/.ssh/config
     local host_info="Host $url"
     local is_contains=false
@@ -122,6 +125,7 @@ function create_git_config() {
             is_contains=true
         fi
     else
+        touch $sshconfig_path
         is_contains=false
     fi
     if [ $is_contains = false ]; then
