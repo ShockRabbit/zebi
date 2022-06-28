@@ -2,31 +2,6 @@
 
 source util.sh
 
-function install_command_line_tool() {
-    xcode-select --install
-    sleep 1
-osascript <<EOD
-  tell application "System Events"
-    tell process "Install Command Line Developer Tools"
-      keystroke return
-      click button "Agree" of window "License Agreement"
-    end tell
-  end tell
-EOD
-}
-
-function install_brew_with_expect_pw() {
-    local pw=$1
-    local cmd=$([ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)")
-expect <<EOF
-set timeout 120
-spawn $cmd
-expect "Password:" { send "$pw\n"; expect eof }
-expect "Press RETURN to continue" { send "\n"; expect eof }
-expect "Password:" { send "$pw\n"; expect eof }
-EOF
-}
-
 function request_login_mas() {
     # Request login to Mac App Store
     echo_title "Login to Mac App Store"
@@ -39,23 +14,12 @@ function prepare_install() {
     local config_path=$1
     local pw=$2
     
-    # 설치를 위해 필요한 것들을 설치한다. (xcode command line developer tool, brew, git, jq)
-    # install xcode command line developer tool
-    if softwareupdate --history | grep --silent "Command Line Tools"; then
-        echo "Command line tools already installed"
-    else
-        install_command_line_tool
-    fi
-    
+    # 설치를 위해 필요한 것들을 설치한다. (brew, git, jq)
     # install Homebrew
     is_brew_exist=$(is_exist_cmd brew)
     if [[ $is_brew_exist != "exist" ]]; then
-        install_brew_with_expect_pw $pw
-        # 왜인지 잘 모르겠지만 expect 가 안먹는다 ... 별 수 없이 처음에는 비번 넣고 엔터키 쳐준다.
-        #[ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        [ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     fi
-
-
 
     # install git
     is_git_exist=$(is_exist_cmd git)
