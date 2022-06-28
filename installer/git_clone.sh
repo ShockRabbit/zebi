@@ -3,10 +3,10 @@
 #source util.sh
 
 function git_clone_with_expect() {
-    local cmd=$(eval echo $1)
+    local params=$1
 expect <<EOF
 set timeout 120
-spawn $cmd
+spawn git clone $(eval echo $params)
 expect "(yes/no" { send "yes\n"; expect eof }
 EOF
 }
@@ -26,9 +26,8 @@ function git_clone() {
     log "git clone ${recursive_opt} ${branch_opt} ${url} ${dest_path}"
 
     # expect 써야해서 log_error 는 포기 ..
-    #git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path || log_error "[git_clone] fail git clone $recursive_opt $branch_opt $url $dest_path"
-    local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $url $dest_path)
-    git_clone_with_expect $cmd
+    local params="${recursive_opt} ${branch_opt} ${url} ${dest_path}"
+    git_clone_with_expect "${params}"
 }
 
 function gitlab_group_clone() {
@@ -51,9 +50,9 @@ function gitlab_group_clone() {
     fi
     pushd $dest_path
     for repo in $repos ; do
-        log "git clone ${recursive_opt} ${branch_opt} ${repo} ${dest_path}"
-        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo)
-        git_clone_with_expect $cmd
+        log "git clone ${recursive_opt} ${branch_opt} ${repo}"
+        local params="${recursive_opt} ${branch_opt} ${repo}"
+        git_clone_with_expect "${params}"
     done
     popd
 }
@@ -79,9 +78,9 @@ function github_user_clone() {
     fi
     pushd $dest_path
     for repo in $repos ; do
-        log "git clone ${recursive_opt} ${branch_opt} ${repo} ${dest_path}"
-        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo)
-        git_clone_with_expect $cmd
+        log "git clone ${recursive_opt} ${branch_opt} ${repo}"
+        local params="${recursive_opt} ${branch_opt} ${repo}"
+        git_clone_with_expect "${params}"
     done
     popd
 }
