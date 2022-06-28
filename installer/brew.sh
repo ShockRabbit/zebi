@@ -27,20 +27,17 @@ function install_process_brew() {
     local pw=$2
 
     echo_title "Install Process brew :: brew tap"
-    local brew_taps=`cat $config_path | jq -r ".brew | .taps[]"`
-    for t in $brew_taps; do
+    cat $config_path | jq -c '.brew | .taps[]' | while read t; do
         log "brew tap $t"
         brew tap $t || log_error "[brew] fail brew tap $t"
     done
     echo_title "Install Process brew :: brew install --cask"
-    local brew_casks=`cat $config_path | jq -r ".brew | .casks[]"`
-    for c in $brew_casks; do
+    cat $config_path | jq -c '.brew | .casks[]' | while read c; do
         log "brew install --cask $c"
         cask_install_with_expect_pw "${c}" $pw
     done
     echo_title "Install Process brew :: brew install"
-    local brew_brews=`cat $config_path | jq -r ".brew | .brews[]"`
-    for b in $brew_brews; do
+    cat $config_path | jq -c '.brew | .brews[]' | while read b; do
         log "brew install $b"
         install_with_expect_pw "${b}" $pw
     done
