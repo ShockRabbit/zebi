@@ -2,17 +2,27 @@
 
 source util.sh
 
-function install_command_line_tool() {
+function install_command_line_tool_internal() {
     xcode-select --install
     sleep 1
 osascript <<EOD
   tell application "System Events"
     tell process "Install Command Line Developer Tools"
       keystroke return
-      click button "Agree" of window "License Agreement"
+      click button "동의" of window "사용권 계약"
     end tell
   end tell
 EOD
+}
+
+function install_command_line_tool() {
+    local pw=$1
+    local cmd=$(install_command_line_tool_internal)
+expect <<EOF
+set timeout 120
+spawn $cmd
+expect "Password:" { send "$pw\n"; expect eof }
+EOF
 }
 
 function install_brew_with_expect_pw() {
@@ -44,7 +54,7 @@ function prepare_install() {
     if softwareupdate --history | grep --silent "Command Line Tools"; then
         echo "Command line tools already installed"
     else
-        install_command_line_tool
+        install_command_line_tool $pw
     fi
     
     # install Homebrew
