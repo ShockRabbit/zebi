@@ -7,7 +7,7 @@ function git_clone_with_expect() {
 expect <<EOF
 set timeout 120
 spawn $cmd
-expect "Are you sure you want to continue connecting (yes/no" { send "yes\n"; expect eof }
+expect "(yes/no" { send "yes\n"; expect eof }
 EOF
 }
 
