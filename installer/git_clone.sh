@@ -46,11 +46,13 @@ function gitlab_group_clone() {
     local branch_opt="-b ${branch}"
 
     repos=$(curl -s --header "PRIVATE-TOKEN:${private_token}" $root_url/api/v4/groups/$group_id | jq ".projects[].ssh_url_to_repo" | tr -d '"')
+    pushd $dest_path
     for repo in $repos ; do
         log "git clone ${recursive_opt} ${branch_opt} ${repo} ${dest_path}"
-        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo $dest_path)
+        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo)
         git_clone_with_expect $cmd
     done
+    popd
 }
 
 function github_user_clone() {
@@ -69,11 +71,13 @@ function github_user_clone() {
     name_len=${#user_name}
     name_len=$((name_len+1))    # slash(/) 까지 고려해서 길이 계산
     repos=$(curl -s -H "Authorization: token ${private_token}" "https://api.github.com/user/repos" | jq -r ".[] | select(.full_name[:${name_len}]==\"${user_name}/\") | .ssh_url")
+    pushd $dest_path
     for repo in $repos ; do
         log "git clone ${recursive_opt} ${branch_opt} ${repo} ${dest_path}"
-        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo $dest_path)
+        local cmd=$(git clone $(eval echo $recursive_opt) $(eval echo $branch_opt) $repo)
         git_clone_with_expect $cmd
     done
+    popd
 }
 
 function install_process_git_clone() {
