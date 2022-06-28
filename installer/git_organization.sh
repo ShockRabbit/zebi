@@ -19,7 +19,7 @@ function ssh_keygen() {
     log "generate ssh key (${email}) : ${save_path}"
 expect <<EOF
 set timeout 1
-spawn ssh-keygen -t rsa -b 2048 -C $email
+spawn ssh-keygen -t ed25519 -C $email
 expect "Enter file in which to save the key"
 send "$save_path\n"
 expect "Enter passphrase"
@@ -43,7 +43,7 @@ function register_ssh_key() {
     local url=$2
     local private_token=$3
 
-    local ssh_path=$HOME/.ssh/id_rsa_$name.pub
+    local ssh_path=$HOME/.ssh/id_ed25519_$name.pub
     local title="${USER}_${name}"
     local ssh_key=$(cat $ssh_path)
 
@@ -132,7 +132,7 @@ function create_git_config() {
         echo $host_info >> $sshconfig_path
         echo "\tHostname $url" >> $sshconfig_path
         echo "\tUser git" >> $sshconfig_path
-        echo "\tIdentityFile ~/.ssh/id_rsa_$name" >> $sshconfig_path
+        echo "\tIdentityFile ~/.ssh/id_ed25519_$name" >> $sshconfig_path
         echo "\tIdentitiesOnly=yes" >> $sshconfig_path
     fi
 }
@@ -155,7 +155,7 @@ function install_process_git_organization() {
         create_git_config $n $url $user_name $user_email "${include_paths[@]}"
 
         # ssh keygen
-        local save_path="$HOME/.ssh/id_rsa_$n"
+        local save_path="$HOME/.ssh/id_ed25519_$n"
         ssh_keygen $user_email $save_path
 
         # register ssh key
