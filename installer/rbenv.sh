@@ -20,6 +20,7 @@ function install_process_rbenv() {
     shell_config_file=$(get_shell_config_file)
     safe_append_config 'if command -v rbenv 1>/dev/null 2>&1; then\n  eval "$(rbenv init -)"\nfi' $shell_config_file
     safe_append_config 'export PATH="$HOME/.rbenv/bin:$PATH"' $shell_config_file
+    safe_append_config 'export PATH="$HOME/.rbenv/shims:$PATH"' $shell_config_file
 
     # Restart shell
     source $shell_config_file

@@ -7,6 +7,7 @@ function install_process_nodenv() {
 
     echo_title "Install Process nodenv"
     
+    brew install node || log_error "[nodenv] fail :: brew install node"
     brew install nodenv || log_error "[nodenv] fail :: brew install nodenv"
     brew install node-build || log_error "[nodenv] fali :: brew install node-build"
 
@@ -19,6 +20,7 @@ function install_process_nodenv() {
     shell_config_file=$(get_shell_config_file)
     safe_append_config 'if command -v nodenv 1>/dev/null 2>&1; then\n  eval "$(nodenv init -)"\nfi' $shell_config_file
     safe_append_config 'export PATH="$HOME/.nodenv/bin:$PATH"' $shell_config_file
+    safe_append_config 'export PATH="$HOME/.nodenv/shims:$PATH"' $shell_config_file
     # Restart shell
     #exec "$SHELL"
     source $shell_config_file
