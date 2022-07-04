@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#source util.sh
+# source ../util.sh
 #|| log_error $error_msg
 function install_with_expect_pw() {
     local params=$1
@@ -27,20 +27,20 @@ function install_process_brew() {
     local pw=$2
 
     echo_title "Install Process brew :: brew tap"
-    cat $config_path | jq -c '.brew | .taps[]' | while read t; do
+    cat $config_path | jq -r '.brew | .taps[]' | while read t; do
         log "brew tap $t"
         brew tap $t || log_error "[brew] fail brew tap $t"
     done
     echo_title "Install Process brew :: brew install --cask"
-    cat $config_path | jq -c '.brew | .casks[]' | while read c; do
+    cat $config_path | jq -r '.brew | .casks[]' | while read c; do
         log "brew install --cask $c"
         cask_install_with_expect_pw "${c}" $pw
     done
     echo_title "Install Process brew :: brew install"
-    cat $config_path | jq -c '.brew | .brews[]' | while read b; do
+    cat $config_path | jq -r '.brew | .brews[]' | while read b; do
         log "brew install $b"
         install_with_expect_pw "${b}" $pw
     done
 }
 
-#install_process_brew ../config.json TEST_PASSWORD
+# install_process_brew ~/Desktop/config_for_macmini.json TEST_PASSWORD
