@@ -54,20 +54,22 @@ for entry in ./installer/*; do
 done
 
 echo_title "enter config file path for install automation"
-read -ep "config file path:" config_path
+read -ep "config file path:" config_path_str
 echo "\n"
 
 echo_title "enter password for install automation"
 read -rsp "password:" pw
 echo "\n"
 
+config_path=$(eval echo $config_path_str)
 prepare_install $config_path $pw
 
 # execute install process by order
 order=`cat $config_path | jq -r ".order[]"`
 for o in $order; do
     if [[ $o == *".sh" ]] ; then
-        sh $o
+        sh_path=$(eval echo $o)
+        sh $sh_path
     else
         install_process_$o $config_path $pw
     fi
