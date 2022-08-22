@@ -81,6 +81,12 @@ function install_process_unity3d() {
         for p in $platforms; do
             parms="${parms} ${p}"
         done
+        
+        if [[ "$cpu_type" == "arm64" ]]; then
+            parms="${parms} --platform macOSArm"
+        else
+            parms="${parms} --platform macOSIntel"
+        fi
         log "Install Unity3d $v : $parms"
         expect_install_unity $install_unity_cmd $v "${parms}" $pw
     done
