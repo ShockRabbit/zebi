@@ -4,7 +4,8 @@
 
 function expect_install_rosetta2() {
     local pw=$1
-
+    has_rosetta=$(/usr/bin/pgrep -q oahd && echo Yes || echo No)
+    if [[ $has_rosetta == "No" ]]; then
 expect <<EOF
 set timeout 12000
 spawn sudo softwareupdate --install-rosetta
@@ -14,6 +15,7 @@ expect "Type A and press return to agree:"
 send "A\n"
 expect eof
 EOF
+    fi
 }
 
 function expect_install_unity() {
@@ -90,6 +92,7 @@ function install_process_unity3d() {
 
     local versions=`cat $config_path | jq -r ".unity3d | .[].version"`
     for v in $versions; do
+        local apple_silicon=`cat $config_path | jq -r ".unity3d | .[] | select(.version==\"${v}\") | .apple_silicon then 1 else 0 end"`
         local platforms=`cat $config_path | jq -r ".unity3d | .[] | select(.version==\"${v}\") | .platforms[]"`
         local parms="Unity"
         for p in $platforms; do
@@ -97,8 +100,17 @@ function install_process_unity3d() {
         done
         
         if [[ "$cpu_type" == "arm64" ]]; then
-            parms="${parms} --platform macOSArm"
+            if [ $apple_silicon -eq 1 ]; then
+                parms="${parms} --platform macOSArm"
+            else
+                log "Install rosetta 2"
+                expect_install_rosetta2 $pw
+                parms="${parms} --platform macOSIntel"
+            fi
         else
+            if [ $apple_silicon -eq 1 ]; then
+                log "apple_silicon option is true but your cpu type is not apple silicon then will install with macOSIntel option"
+            fi
             parms="${parms} --platform macOSIntel"
         fi
         log "Install Unity3d $v : $parms"
