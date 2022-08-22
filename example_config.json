@@ -185,6 +185,7 @@
     "unity3d": [
         {
             "version": "2018.4.17f1" ,
+            "apple_silicon": false,
             "platforms": [
                 "iOS",
                 "Android"
