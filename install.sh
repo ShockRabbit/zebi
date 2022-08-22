@@ -19,6 +19,12 @@ function prepare_install() {
     is_brew_exist=$(is_exist_cmd brew)
     if [[ $is_brew_exist != "exist" ]]; then
         [ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+        if [[ "$cpu_type" == "arm64" ]]; then
+            # apple silicon 의 경우 따로 PATH 등록이 필요하다
+            shell_config_file=$(get_shell_config_file)
+            safe_append_config 'export PATH="/opt/homebrew/bin:$PATH"' $shell_config_file
+        fi
     fi
 
     # install git
