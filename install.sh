@@ -10,6 +10,22 @@ function request_login_mas() {
     read -p "Press enter to continue after Login to Mac App Store"
 }
 
+function expect_install_rosetta2() {
+    local pw=$1
+    has_rosetta=$(/usr/bin/pgrep -q oahd && echo Yes || echo No)
+    if [[ $has_rosetta == "No" ]]; then
+expect <<EOF
+set timeout 12000
+spawn sudo softwareupdate --install-rosetta
+expect "assword:"
+send "$pw\n"
+expect "Type A and press return to agree:"
+send "A\n"
+expect eof
+EOF
+    fi
+}
+
 function prepare_install() {
     local config_path=$1
     local pw=$2
@@ -20,10 +36,14 @@ function prepare_install() {
     if [[ $is_brew_exist != "exist" ]]; then
         [ X`which brew` = X/usr/local/bin/brew ] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
+        local cpu_type=$(uname -m)
         if [[ "$cpu_type" == "arm64" ]]; then
+            log "Install rosetta 2"
+            expect_install_rosetta2 $pw
             # apple silicon 의 경우 따로 PATH 등록이 필요하다
             shell_config_file=$(get_shell_config_file)
             safe_append_config 'export PATH="/opt/homebrew/bin:$PATH"' $shell_config_file
+            source $shell_config_file
         fi
     fi
 

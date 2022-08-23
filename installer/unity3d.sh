@@ -2,21 +2,6 @@
 
 #source util.sh
 
-function expect_install_rosetta2() {
-    local pw=$1
-    has_rosetta=$(/usr/bin/pgrep -q oahd && echo Yes || echo No)
-    if [[ $has_rosetta == "No" ]]; then
-expect <<EOF
-set timeout 12000
-spawn sudo softwareupdate --install-rosetta
-expect "assword:"
-send "$pw\n"
-expect "Type A and press return to agree:"
-send "A\n"
-expect eof
-EOF
-    fi
-}
 
 function expect_install_unity() {
     local install_unity_cmd=$1
@@ -103,8 +88,6 @@ function install_process_unity3d() {
             if [ $apple_silicon -eq 1 ]; then
                 parms="${parms} --platform macOSArm"
             else
-                log "Install rosetta 2"
-                expect_install_rosetta2 $pw
                 parms="${parms} --platform macOSIntel"
             fi
         else
@@ -133,10 +116,6 @@ function install_process_unity3d() {
         for entry in /Volumes/*; do
             if [[ "$entry" == *"Unity Hub"* ]]; then
                 echo "$entry"
-                if [[ "$cpu_type" == "arm64" ]]; then
-                    log "Install rosetta 2"
-                    expect_install_rosetta2 $pw
-                fi
                 log "Install Unity Hub"
                 expect_install_unityhub "${entry}" $pw
                 hdiutil unmount "${entry}"
