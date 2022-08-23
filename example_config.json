@@ -10,7 +10,10 @@
         "unity3d",
         "android_sdk",
         "android_ndk",
-        "sdkman"
+        "sdkman",
+        "downloader",
+        "unzip",
+        "~/your_dir/example.sh"
     ],
     "pyenv": {
         "global": "default",
@@ -109,10 +112,31 @@
     ],
     "git_clone": [
         {
+            "name": "shockrabbit-installer",
+            "type": "repository",
             "ssh_url": "git@github.com:ShockRabbit/installer.git",
             "branch": "master",
             "recursive": false,
             "dest_path": "~/ShockRabbit/installer"
+        },
+        {
+            "name": "my-gitlab-group",
+            "type": "gitlab-group",
+            "group_id": "117",
+            "private_token": "my_token",
+            "root_url": "gitlab.custom.com",
+            "branch": "master",
+            "recursive": true,
+            "dest_path": "~/MyGitlabGroup"
+        },
+        {
+            "name": "my-github",
+            "type": "github-user",
+            "user_name": "shockrabbit",
+            "private_token": "my_token",
+            "branch": "develop",
+            "recursive": true,
+            "dest_path": "~/ShockRabbit"
         }
     ],
     "brew": {
@@ -199,6 +223,19 @@
             "versions": [
                 "5.2"
             ]
+        }
+    ],
+    "downloader": [
+        {
+            "url": "https://github.com/dracula/xcode/archive/master.zip",
+            "use_redirect": true,
+            "dest_path": "~/Downloads/dracula_xccolortheme.zip"
+        }
+    ],
+    "unzip": [
+        {
+            "src_path": "~/Downloads/dracula_xccolortheme.zip",
+            "dest_path": "~/Downloads/dracula_theme"
         }
     ]
 }
