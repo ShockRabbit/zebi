@@ -19,6 +19,7 @@ function echo_title() {
     padding_len=${#PADDING}
     width=len+padding_len*2
     
+    echo ""
     echo "${LIGHT_GREEN}${BORDER_LT}${BORDER_LINE:0:$width}${BORDER_RT}"
     echo "┃${PADDING}${str}${PADDING}┃"
     echo "${BORDER_LB}${BORDER_LINE:0:$width}${BORDER_RB}${NO_COLOR}"
