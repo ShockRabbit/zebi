@@ -96,6 +96,9 @@ for o in $order; do
     if [[ $o == *".sh" ]] ; then
         sh_path=$(eval echo $o)
         sh $sh_path
+    elif [[ $o == *".fish" ]] ; then
+        fish_path=$(eval echo $o)
+        fish $fish_path
     else
         install_process_$o $config_path $pw
     fi
