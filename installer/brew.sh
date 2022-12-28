@@ -32,6 +32,10 @@ function install_process_brew() {
         brew tap $t || log_error "[brew] fail brew tap $t"
     done
     echo_title "Install Process brew :: brew install --cask"
+    log "try dummy install (for prevent first cask item install fail bug)"
+    first_item=$(cat $config_path | jq -r '.brew | .casks[0]')
+    cask_install_with_expect_pw "${first_item}" $pw
+    log "start real cask install"
     cat $config_path | jq -r '.brew | .casks[]' | while read c; do
         log "brew install --cask $c"
         cask_install_with_expect_pw "${c}" $pw
