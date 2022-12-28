@@ -77,7 +77,7 @@ function install_process_unity3d() {
 
     local versions=`cat $config_path | jq -r ".unity3d | .[].version"`
     for v in $versions; do
-        local apple_silicon=`cat $config_path | jq -r ".unity3d | .[] | select(.version==\"${v}\") | .apple_silicon then 1 else 0 end"`
+        local apple_silicon=`cat $config_path | jq -r "if .unity3d | .[] | select(.version==\"${v}\") | .apple_silicon then 1 else 0 end"`
         local platforms=`cat $config_path | jq -r ".unity3d | .[] | select(.version==\"${v}\") | .platforms[]"`
         local parms="Unity"
         for p in $platforms; do
