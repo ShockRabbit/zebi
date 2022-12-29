@@ -98,6 +98,10 @@ function install_process_unity3d() {
         fi
         log "Install Unity3d $v : $parms"
         expect_install_unity $install_unity_cmd $v "${parms}" $pw
+        # rename
+        from="/Applications/Unity_${version:0:6}"
+        to="/Applications/Unnity_${version}"
+        mv $from $to
     done
 
     if [ -d "/Applications/Unity Hub.app" ]; then
