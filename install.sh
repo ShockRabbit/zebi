@@ -1,6 +1,7 @@
 #!/bin/sh
 
-source util.sh
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+source $SCRIPT_DIR/util.sh
 
 function request_login_mas() {
     # Request login to Mac App Store
@@ -75,7 +76,7 @@ function prepare_install() {
 }
 
 # import all installer script
-for entry in ./installer/*; do
+for entry in $SCRIPT_DIR/installer/*; do
     source $entry
 done
 
