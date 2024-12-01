@@ -134,6 +134,15 @@ function create_git_config() {
         echo "\tUser git" >> $sshconfig_path
         echo "\tIdentityFile ~/.ssh/id_ed25519_$name" >> $sshconfig_path
         echo "\tIdentitiesOnly=yes" >> $sshconfig_path
+    else
+        local new_host_info="Host $url_$name"
+        echo "$host_info is already exist. add $new_host_info instead of $host_info"
+
+        echo $new_host_info >> $sshconfig_path
+        echo "\tHostname $url" >> $sshconfig_path
+        echo "\tUser git" >> $sshconfig_path
+        echo "\tIdentityFile ~/.ssh/id_ed25519_$name" >> $sshconfig_path
+        echo "\tIdentitiesOnly=yes" >> $sshconfig_path
     fi
 }
 
