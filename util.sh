@@ -70,6 +70,17 @@ function is_exist_cmd() {
     fi
 }
 
+function is_installed_by_brew() {
+    target=$1
+    if ! brew list | grep -x $target &> /dev/null; then
+        echo "not installed"
+        # return false
+    else
+        echo "installed"
+        # return true
+    fi
+}
+
 
 if [ -f "log_error.txt" ]; then
     rm log_error.txt
