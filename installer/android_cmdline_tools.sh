@@ -46,14 +46,15 @@ function install_process_android_cmdline_tools() {
     echo_title "Download cmdline tools from $latest_download_url to $dest_path"
     curl -L $latest_download_url -o $dest_path
     
-    local cmdline_tools_path=$HOME/Library/Android/sdk/cmdline-tools/latest
-    echo_title "Unzip cmdline tools to $cmdline_tools_path"
-    mkdir -p $cmdline_tools_path
-    unzip -d $cmdline_tools_path -j $dest_path
+    local cmdline_tools_root=$HOME/Library/Android/sdk/cmdline-tools
+    local cmdline_tools_path=$cmdline_tools_root/latest
+    echo_title "Unzip cmdline tools to $cmdline_tools_root"
+    mkdir -p $cmdline_tools_root
+    unzip $dest_path -d $cmdline_tools_root;mv $cmdline_tools_root/cmdline-tools $cmdline_tools_path
 
     # install target cmdline tools
     echo_title "Install target cmdline tools"
-    local latest_sdkmanager=$cmdline_tools_path//bin/sdkmanager
+    local latest_sdkmanager=$cmdline_tools_path/bin/sdkmanager
     $latest_sdkmanager "cmdline-tools;${target_cmdline_tools}"
     
     # install jdk for target cmdline tools
