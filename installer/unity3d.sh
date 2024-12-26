@@ -88,9 +88,9 @@ function install_process_unity3d() {
         log "Install Unity3d $v : $parms"
         expect_install_unity $v "${parms}" $pw
         # rename
-        from="/Applications/Unity\ ${v:0:6}"
+        from="/Applications/Unity ${v:0:6}"
         to="/Applications/Unity/Hub/Editor/${v}"
-        mv $from $to
+        mv "$from" "$to"
 
         if [ $aos_minimal -eq 1 ]; then
             log "aos_minimal option is true. remove android sdk, ndk, openjdk in unity PlaybackEngines/AndroidPlayer"
