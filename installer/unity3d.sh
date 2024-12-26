@@ -4,14 +4,13 @@
 
 
 function expect_install_unity() {
-    local install_unity_cmd=$1
-    local version=$2
-    local parms=$3
-    local pw=$4
+    local version=$1
+    local parms=$2
+    local pw=$3
 
 expect <<EOF
 set timeout 12000
-spawn $(eval echo $install_unity_cmd) install $v -p $(eval echo $parms)
+spawn install-unity install $v -p $(eval echo $parms)
 expect "Do you agree to the above EULA"
 send "y"
 expect "assword:"
@@ -25,13 +24,13 @@ function expect_rm_aos_modules() {
 
 expect <<EOF
 set timeout 12000
-spawn sudo rm -rf /Applications/Unity/Hub/Editor/{$version}/PlaybackEngines/AndroidPlayer/SDK
+spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/SDK
 expect "assword:"
 send "$pw\n"
-spawn sudo rm -rf /Applications/Unity/Hub/Editor/{$version}/PlaybackEngines/AndroidPlayer/NDK
+spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/NDK
 expect "assword:"
 send "$pw\n"
-spawn sudo rm -rf /Applications/Unity/Hub/Editor/{$version}/PlaybackEngines/AndroidPlayer/OpenJDK
+spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/OpenJDK
 expect "assword:"
 send "$pw\n"
 expect eof
@@ -70,10 +69,12 @@ function install_process_unity3d() {
     echo_title "Install Process unity3d"
 
     # install unity
-    install_unity_cmd=$(install_install_unity_from_brew)
-    echo "------------------------------------"
-    echo $install_unity_cmd
-    echo "------------------------------------"
+
+    is_installed=$(is_installed_by_brew install-unity)
+    if [[ $is_installed != "installed" ]]; then
+        echo_title "Install install-unity"
+        brew install --cask sttz/tap/install-unity || log_error "[unity3d] fail :: brew install --cask sttz/tap/install-unity"
+    fi
 
     local versions=`cat $config_path | jq -r ".unity3d | .[].version"`
     for v in $versions; do
@@ -85,7 +86,7 @@ function install_process_unity3d() {
         done
         
         log "Install Unity3d $v : $parms"
-        expect_install_unity $install_unity_cmd $v "${parms}" $pw
+        expect_install_unity $v "${parms}" $pw
         # rename
         from="/Applications/Unity_${version:0:6}"
         to="/Applications/Unity/Hub/Editor/${version}"
