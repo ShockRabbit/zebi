@@ -66,7 +66,7 @@ function install_process_android_cmdline_tools() {
         # add settings to shell config
         shell_config_file=$(get_shell_config_file)
         target_config="export JAVA_${jdk_for_target_cmdline_tools}_HOME=\$(/usr/libexec/java_home -v${jdk_for_target_cmdline_tools})"
-        home_config="export JAVA_HOME=\$JAVA_${jdk_for_target_cmdline_tools}_HOME"
+        home_config="export JAVA_HOME=\\\$JAVA_${jdk_for_target_cmdline_tools}_HOME"
         safe_append_config "$target_config" $shell_config_file
         safe_append_config "$home_config" $shell_config_file
         
