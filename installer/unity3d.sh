@@ -50,9 +50,7 @@ EOF
 }
 
 function install_install_unity_from_brew() {
-    # brew tap sttz/homebrew-tap || log_error "[unity3d] fail :: brew tap sttz/homebrew-tap"
-    brew install sttz/tap/install-unity || log_error "[unity3d] fail :: brew install sttz/tap/install-unity"
-    # brew install --cask sttz/tap/install-unity || log_error "[unity3d] fail :: brew install --cask sttz/tap/install-unity"
+    brew install --cask sttz/tap/install-unity || log_error "[unity3d] fail :: brew install sttz/tap/install-unity"
     echo "install-unity"
 }
 
