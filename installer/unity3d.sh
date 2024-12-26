@@ -88,7 +88,7 @@ function install_process_unity3d() {
         log "Install Unity3d $v : $parms"
         expect_install_unity $v "${parms}" $pw
         # rename
-        from="/Applications/Unity_${v:0:6}"
+        from="/Applications/Unity\ ${v:0:6}"
         to="/Applications/Unity/Hub/Editor/${v}"
         mv $from $to
 
