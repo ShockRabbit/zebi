@@ -32,8 +32,8 @@ function install_process_android_cmdline_tools() {
         
         # add settings to shell config
         shell_config_file=$(get_shell_config_file)
-        latest_config="export JAVA_${jdk_for_latest_cmdline_tools}_HOME=$(/usr/libexec/java_home -v${jdk_for_latest_cmdline_tools})"
-        home_config="export JAVA_HOME=$JAVA_${jdk_for_latest_cmdline_tools}_HOME"
+        latest_config="export JAVA_${jdk_for_latest_cmdline_tools}_HOME=\$(/usr/libexec/java_home -v${jdk_for_latest_cmdline_tools})"
+        home_config="export JAVA_HOME=\$JAVA_${jdk_for_latest_cmdline_tools}_HOME"
         safe_append_config "$latest_config" $shell_config_file
         safe_append_config "$home_config" $shell_config_file
         
@@ -65,8 +65,8 @@ function install_process_android_cmdline_tools() {
         
         # add settings to shell config
         shell_config_file=$(get_shell_config_file)
-        target_config="export JAVA_${jdk_for_target_cmdline_tools}_HOME=$(/usr/libexec/java_home -v${jdk_for_target_cmdline_tools})"
-        home_config="export JAVA_HOME=$JAVA_${jdk_for_target_cmdline_tools}_HOME"
+        target_config="export JAVA_${jdk_for_target_cmdline_tools}_HOME=\$(/usr/libexec/java_home -v${jdk_for_target_cmdline_tools})"
+        home_config="export JAVA_HOME=\$JAVA_${jdk_for_target_cmdline_tools}_HOME"
         safe_append_config "$target_config" $shell_config_file
         safe_append_config "$home_config" $shell_config_file
         
