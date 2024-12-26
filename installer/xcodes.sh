@@ -21,9 +21,11 @@ function install_process_xcodes() {
         brew install aria2
     fi
 
-    cat $config_path | jq -c '.xcodes[]' | while read version; do
-        log "[xcodes] install $version"
-        xcodes install "$version" || log_error "[xcodes] install fail :: $version"
+    versions=`cat $config_path | jq -r ".xcodes[]"`
+    for version in $versions; do
+        log "[xcodes] install ${version}"
+        local ver=$(eval echo $version)
+        xcodes install $ver || log_error "[xcodes] install fail :: $version"
     done
 }
 
