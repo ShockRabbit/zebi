@@ -13,7 +13,7 @@ function install_process_unzip() {
         local dest_path=`cat $config_path | jq -r ".unzip | .[] | select(.src_path==\"${s}\") | .dest_path"`
         log "unzip ${s} to ${dest_path}"
         mkdir -p $(eval echo $dest_path)
-        unzip -d $(eval echo $dest_path) -j $(eval echo $s)
+        unzip $(eval echo $s) -d $(eval echo $dest_path)
     done
 }
 
