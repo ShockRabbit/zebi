@@ -23,7 +23,7 @@ function install_jdk_by_temurin() {
         local shell_config_file=$(get_shell_config_file)
         local latest_config="export JAVA_${jdk_version}_HOME=\$(/usr/libexec/java_home -v${jdk_version})"
         local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
-        local path_config="export PATH=\"\$JAVA_HOME/bin:$PATH\""
+        local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
         safe_append_config "$latest_config" $shell_config_file
         safe_append_config "$home_config" $shell_config_file
         safe_append_config "$path_config" $shell_config_file
@@ -53,7 +53,7 @@ function install_jdk_by_openjdk() {
         local shell_config_file=$(get_shell_config_file)
         local latest_config="export JAVA_${jdk_version}_HOME=\"/opt/homebrew/opt/openjdk@${jdk_version}\""
         local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
-        local path_config="export PATH=\"\$JAVA_HOME/bin:$PATH\""
+        local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
         safe_append_config "$latest_config" $shell_config_file
         safe_append_config "$home_config" $shell_config_file
         safe_append_config "$path_config" $shell_config_file
