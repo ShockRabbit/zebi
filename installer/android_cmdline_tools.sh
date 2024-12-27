@@ -3,12 +3,73 @@
 # source ../util.sh
 #|| log_error $error_msg
 
+function install_jdk_by_temurin() {
+    local jdk_version=$1
+
+    # install temurin
+    local is_temurin_installed=$(is_installed_by_brew temurin)
+    if [[ $is_temurin_installed != "installed" ]]; then
+        echo_title "Install jdk (temurin)"
+        brew install --cask temurin
+    fi
+    
+    # install jdk for latest cmdline tools
+    local is_jdk_installed=$(is_installed_by_brew temurin@$jdk_version)
+    if [[ $is_jdk_installed != "installed" ]]; then
+        echo_title "Install jdk (temurin@$jdk_version)"
+        brew install --cask temurin@$jdk_version
+        
+        # add settings to shell config
+        local shell_config_file=$(get_shell_config_file)
+        local latest_config="export JAVA_${jdk_version}_HOME=\$(/usr/libexec/java_home -v${jdk_version})"
+        local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
+        local path_config="export PATH=\"\$JAVA_HOME/bin:$PATH\""
+        safe_append_config "$latest_config" $shell_config_file
+        safe_append_config "$home_config" $shell_config_file
+        safe_append_config "$path_config" $shell_config_file
+        
+        # Restart shell
+        source $shell_config_file
+    fi
+}
+
+function install_jdk_by_openjdk() {
+    local jdk_version=$1
+
+    # install openjdk
+    local is_openjdk_installed=$(is_installed_by_brew openjdk)
+    if [[ $is_openjdk_installed != "installed" ]]; then
+        echo_title "Install jdk (openjdk)"
+        brew install --cask openjdk
+    fi
+    
+    # install jdk for latest cmdline tools
+    local is_jdk_installed=$(is_installed_by_brew openjdk@$jdk_version)
+    if [[ $is_jdk_installed != "installed" ]]; then
+        echo_title "Install jdk (openjdk@$jdk_version)"
+        brew install --cask openjdk@$jdk_version
+        
+        # add settings to shell config
+        local shell_config_file=$(get_shell_config_file)
+        local latest_config="export JAVA_${jdk_version}_HOME=\"/opt/homebrew/opt/openjdk@${jdk_version}\""
+        local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
+        local path_config="export PATH=\"\$JAVA_HOME/bin:$PATH\""
+        safe_append_config "$latest_config" $shell_config_file
+        safe_append_config "$home_config" $shell_config_file
+        safe_append_config "$path_config" $shell_config_file
+        
+        # Restart shell
+        source $shell_config_file
+    fi
+}
+
 function install_process_android_cmdline_tools() {
     local config_path=$1
     local pw=$2
 
     echo_title "Install Process android_cmdline_tools"
 
+    local use_temurin=`cat $config_path | jq -r "if .android_cmdline_tools | .jdk_use_temurin then 1 else 0 end"`
     local jdk_for_latest_cmdline_tools=`cat $config_path | jq -r ".android_cmdline_tools | .jdk_for_latest_cmdline_tools"`
     local latest_download_url=`cat $config_path | jq -r ".android_cmdline_tools | .latest_download_url"`
     local target_cmdline_tools=`cat $config_path | jq -r ".android_cmdline_tools | .target_cmdline_tools"`
@@ -17,28 +78,11 @@ function install_process_android_cmdline_tools() {
     local build_tools_list=`cat $config_path | jq -r ".android_cmdline_tools | .build_tools[]"`
     local ndk_list=`cat $config_path | jq -r ".android_cmdline_tools | .ndk[]"`
     
-    # install temurin
-    is_temurin_installed=$(is_installed_by_brew temurin)
-    if [[ $is_temurin_installed != "installed" ]]; then
-        echo_title "Install jdk (temurin)"
-        brew install --cask temurin
-    fi
-    
     # install jdk for latest cmdline tools
-    is_jdk_for_latest_cmdline_tools_installed=$(is_installed_by_brew temurin@$jdk_for_latest_cmdline_tools)
-    if [[ $is_jdk_for_latest_cmdline_tools_installed != "installed" ]]; then
-        echo_title "Install jdk (temurin@$jdk_for_latest_cmdline_tools) for latest cmdline tools"
-        brew install --cask temurin@$jdk_for_latest_cmdline_tools
-        
-        # add settings to shell config
-        shell_config_file=$(get_shell_config_file)
-        latest_config="export JAVA_${jdk_for_latest_cmdline_tools}_HOME=\$(/usr/libexec/java_home -v${jdk_for_latest_cmdline_tools})"
-        home_config="export JAVA_HOME=\$JAVA_${jdk_for_latest_cmdline_tools}_HOME"
-        safe_append_config "$latest_config" $shell_config_file
-        safe_append_config "$home_config" $shell_config_file
-        
-        # Restart shell
-        source $shell_config_file
+    if [ $use_temurin -eq 1 ]; then
+        install_jdk_by_temurin $jdk_for_latest_cmdline_tools
+    else
+        install_jdk_by_openjdk $jdk_for_latest_cmdline_tools
     fi
 
     # install latest cmdline tools
@@ -58,22 +102,12 @@ function install_process_android_cmdline_tools() {
     $latest_sdkmanager "cmdline-tools;${target_cmdline_tools}"
     
     # install jdk for target cmdline tools
-    is_jdk_for_target_cmdline_tools_installed=$(is_installed_by_brew temurin@$jdk_for_target_cmdline_tools)
-    if [[ $is_jdk_for_target_cmdline_tools_installed != "installed" ]]; then
-        echo_title "Install jdk (temurin@$jdk_for_target_cmdline_tools) for target cmdline tools"
-        brew install --cask temurin@$jdk_for_target_cmdline_tools
-        
-        # add settings to shell config
-        shell_config_file=$(get_shell_config_file)
-        target_config="export JAVA_${jdk_for_target_cmdline_tools}_HOME=\$(/usr/libexec/java_home -v${jdk_for_target_cmdline_tools})"
-        home_config="export JAVA_HOME=\\\$JAVA_${jdk_for_target_cmdline_tools}_HOME"
-        safe_append_config "$target_config" $shell_config_file
-        safe_append_config "$home_config" $shell_config_file
-        
-        # Restart shell
-        source $shell_config_file
+    if [ $use_temurin -eq 1 ]; then
+        install_jdk_by_temurin $jdk_for_target_cmdline_tools
+    else
+        install_jdk_by_openjdk $jdk_for_target_cmdline_tools
     fi
-    
+
     # install platform-tools, sdk_api, build_tools, ndk
     local target_sdkmanager=$HOME/Library/Android/sdk/cmdline-tools/$target_cmdline_tools/bin/sdkmanager
     echo_title "Install platform-tools"

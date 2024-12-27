@@ -215,6 +215,7 @@
         }
     ],
     "android_cmdline_tools": {
+        "jdk_use_temurin": false,
         "jdk_for_latest_cmdline_tools": "17",
         "latest_download_url": "https://dl.google.com/android/repository/commandlinetools-mac-11076708_latest.zip?hl=ko",
         "target_cmdline_tools": "8.0",
