@@ -31,6 +31,7 @@ function add_jdk_settings_to_config_by_temurin() {
     local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
     safe_append_config "$latest_config" $shell_config_file
     safe_append_config "$home_config" $shell_config_file
+    safe_remove_config "$path_config" $shell_config_file
     safe_append_config "$path_config" $shell_config_file
     
     # Restart shell
@@ -65,6 +66,7 @@ function add_jdk_settings_to_config_by_openjdk() {
     local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
     safe_append_config "$latest_config" $shell_config_file
     safe_append_config "$home_config" $shell_config_file
+    safe_remove_config "$path_config" $shell_config_file
     safe_append_config "$path_config" $shell_config_file
     
     # Restart shell

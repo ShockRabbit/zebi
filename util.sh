@@ -59,6 +59,18 @@ function safe_append_config() {
     fi
 }
 
+function safe_remove_config() {
+    config_line=$1
+    shell_config_file=$2
+
+    if grep "${config_line}" $shell_config_file>/dev/null; then
+        sed -i '' "/${config_line}/d" $shell_config_file
+        echo "${config_line} removed from ${shell_config_file}"
+    else
+        echo "${config_line} does not exist in ${shell_config_file}"
+    fi
+}
+
 function is_exist_cmd() {
     target_cmd=$1
     if ! command -v $target_cmd &> /dev/null; then
