@@ -19,7 +19,7 @@ expect eof
 EOF
 }
 
-function expect_rm_aos_modules() {
+function expect_rm_aos_sdk() {
     local version=$1
 
 expect <<EOF
@@ -27,9 +27,27 @@ set timeout 12000
 spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/SDK
 expect "assword:"
 send "$pw\n"
+expect eof
+EOF
+}
+
+function expect_rm_aos_ndk() {
+    local version=$1
+
+expect <<EOF
+set timeout 12000
 spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/NDK
 expect "assword:"
 send "$pw\n"
+expect eof
+EOF
+}
+
+function expect_rm_aos_jdk() {
+    local version=$1
+
+expect <<EOF
+set timeout 12000
 spawn sudo rm -rf /Applications/Unity/Hub/Editor/$version/PlaybackEngines/AndroidPlayer/OpenJDK
 expect "assword:"
 send "$pw\n"
@@ -94,7 +112,9 @@ function install_process_unity3d() {
 
         if [ $aos_minimal -eq 1 ]; then
             log "aos_minimal option is true. remove android sdk, ndk, openjdk in unity PlaybackEngines/AndroidPlayer"
-            expect_rm_aos_modules $v
+            expect_rm_aos_sdk $v
+            expect_rm_aos_ndk $v
+            expect_rm_aos_jdk $v
         fi
     done
 }
