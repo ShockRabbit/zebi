@@ -44,14 +44,14 @@ function install_jdk_by_openjdk() {
     local is_openjdk_installed=$(is_installed_by_brew openjdk)
     if [[ $is_openjdk_installed != "installed" ]]; then
         echo_title "Install jdk (openjdk)"
-        brew install --cask openjdk
+        brew install openjdk
     fi
     
     # install jdk for latest cmdline tools
     local is_jdk_installed=$(is_installed_by_brew openjdk@$jdk_version)
     if [[ $is_jdk_installed != "installed" ]]; then
         echo_title "Install jdk (openjdk@$jdk_version)"
-        brew install --cask openjdk@$jdk_version
+        brew install openjdk@$jdk_version
     fi
 }
 
