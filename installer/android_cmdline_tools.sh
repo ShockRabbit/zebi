@@ -140,6 +140,16 @@ function install_process_android_cmdline_tools() {
         echo_title "Install ndk;$ndk"
         $target_sdkmanager "ndk;$ndk" || log_error "[android_cmdline_tools] install fail ndk;$ndk"
     done
+
+    # remove jdk for latest cmdline tools 
+    rm -rf $cmdline_tools_path
+
+    # add config for sdk, cmdline-tools
+    local shell_config_file=$(get_shell_config_file)
+    local config_for_cmdtools="export PATH=\"/Users/bagelcode/Library/Android/sdk/cmdline-tools/{$target_cmdline_tools}/bin:\$PATH\""
+    safe_append_config "$config_for_cmdtools" $shell_config_file
+    local config_for_sdk="export ANDROID_HOME=$HOME/Library/Android/sdk"
+    safe_append_config "$config_for_sdk" $shell_config_file
 }
 
 # install_process_android_cmdline_tools ~/Desktop/config_for_macmini.json TEST_PASSWORD
