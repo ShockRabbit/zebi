@@ -18,19 +18,23 @@ function install_jdk_by_temurin() {
     if [[ $is_jdk_installed != "installed" ]]; then
         echo_title "Install jdk (temurin@$jdk_version)"
         brew install --cask temurin@$jdk_version
-        
-        # add settings to shell config
-        local shell_config_file=$(get_shell_config_file)
-        local latest_config="export JAVA_${jdk_version}_HOME=\$(/usr/libexec/java_home -v${jdk_version})"
-        local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
-        local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
-        safe_append_config "$latest_config" $shell_config_file
-        safe_append_config "$home_config" $shell_config_file
-        safe_append_config "$path_config" $shell_config_file
-        
-        # Restart shell
-        source $shell_config_file
     fi
+}
+
+function add_jdk_settings_to_config_by_temurin() {
+    local jdk_version=$1
+    
+    # add settings to shell config
+    local shell_config_file=$(get_shell_config_file)
+    local latest_config="export JAVA_${jdk_version}_HOME=\$(/usr/libexec/java_home -v${jdk_version})"
+    local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
+    local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
+    safe_append_config "$latest_config" $shell_config_file
+    safe_append_config "$home_config" $shell_config_file
+    safe_append_config "$path_config" $shell_config_file
+    
+    # Restart shell
+    source $shell_config_file
 }
 
 function install_jdk_by_openjdk() {
@@ -48,19 +52,23 @@ function install_jdk_by_openjdk() {
     if [[ $is_jdk_installed != "installed" ]]; then
         echo_title "Install jdk (openjdk@$jdk_version)"
         brew install --cask openjdk@$jdk_version
-        
-        # add settings to shell config
-        local shell_config_file=$(get_shell_config_file)
-        local latest_config="export JAVA_${jdk_version}_HOME=\"/opt/homebrew/opt/openjdk@${jdk_version}\""
-        local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
-        local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
-        safe_append_config "$latest_config" $shell_config_file
-        safe_append_config "$home_config" $shell_config_file
-        safe_append_config "$path_config" $shell_config_file
-        
-        # Restart shell
-        source $shell_config_file
     fi
+}
+
+function add_jdk_settings_to_config_by_openjdk() {
+    local jdk_version=$1
+
+    # add settings to shell config
+    local shell_config_file=$(get_shell_config_file)
+    local latest_config="export JAVA_${jdk_version}_HOME=\"/opt/homebrew/opt/openjdk@${jdk_version}\""
+    local home_config="export JAVA_HOME=\$JAVA_${jdk_version}_HOME"
+    local path_config="export PATH=\"\$JAVA_HOME/bin:\$PATH\""
+    safe_append_config "$latest_config" $shell_config_file
+    safe_append_config "$home_config" $shell_config_file
+    safe_append_config "$path_config" $shell_config_file
+    
+    # Restart shell
+    source $shell_config_file
 }
 
 function install_process_android_cmdline_tools() {
@@ -81,8 +89,10 @@ function install_process_android_cmdline_tools() {
     # install jdk for latest cmdline tools
     if [ $use_temurin -eq 1 ]; then
         install_jdk_by_temurin $jdk_for_latest_cmdline_tools
+        add_jdk_settings_to_config_by_temurin $jdk_for_latest_cmdline_tools
     else
         install_jdk_by_openjdk $jdk_for_latest_cmdline_tools
+        add_jdk_settings_to_config_by_openjdk $jdk_for_latest_cmdline_tools
     fi
 
     # install latest cmdline tools
@@ -105,8 +115,10 @@ function install_process_android_cmdline_tools() {
     # install jdk for target cmdline tools
     if [ $use_temurin -eq 1 ]; then
         install_jdk_by_temurin $jdk_for_target_cmdline_tools
+        add_jdk_settings_to_config_by_temurin $jdk_for_target_cmdline_tools
     else
         install_jdk_by_openjdk $jdk_for_target_cmdline_tools
+        add_jdk_settings_to_config_by_openjdk $jdk_for_target_cmdline_tools
     fi
 
     # install platform-tools, sdk_api, build_tools, ndk
