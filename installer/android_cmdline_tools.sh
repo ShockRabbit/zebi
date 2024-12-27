@@ -99,6 +99,7 @@ function install_process_android_cmdline_tools() {
     # install target cmdline tools
     echo_title "Install target cmdline tools"
     local latest_sdkmanager=$cmdline_tools_path/bin/sdkmanager
+    yes | $latest_sdkmanager --licenses
     $latest_sdkmanager "cmdline-tools;${target_cmdline_tools}"
     
     # install jdk for target cmdline tools
@@ -110,6 +111,7 @@ function install_process_android_cmdline_tools() {
 
     # install platform-tools, sdk_api, build_tools, ndk
     local target_sdkmanager=$HOME/Library/Android/sdk/cmdline-tools/$target_cmdline_tools/bin/sdkmanager
+    yes | $target_sdkmanager --licenses
     echo_title "Install platform-tools"
     $target_sdkmanager "platform-tools" || log_error "[android_cmdline_tools] install fail platform-tools"
     for api in $sdk_api_list; do
