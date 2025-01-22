@@ -21,12 +21,15 @@ function install_process_xcodes() {
         brew install aria2
     fi
 
-    versions=`cat $config_path | jq -r ".xcodes[]"`
+    versions=`cat $config_path | jq -r ".xcodes | .installs[]"`
     for version in $versions; do
         log "[xcodes] install ${version}"
         local ver=$(eval echo $version)
         xcodes install $ver || log_error "[xcodes] install fail :: $version"
     done
+
+    select_version=`cat $config_path | jq -r ".xcodes | .select"`
+    xcodes select $select_version
 }
 
 # install_process_xcodes ~/Desktop/config_for_macmini.json TEST_PASSWORD

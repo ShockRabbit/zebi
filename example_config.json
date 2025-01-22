@@ -224,9 +224,10 @@
         "build_tools": ["32.0.0"],
         "ndk": ["23.1.7779620"]
     },
-    "xcodes": [
-        "16.2"
-    ],
+    "xcodes": {
+        "installs": ["16.2"],
+        "select": "16.2"
+    },
     "downloader": [
         {
             "url": "https://github.com/dracula/xcode/archive/master.zip",
