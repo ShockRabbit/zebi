@@ -9,6 +9,7 @@
         "brew",
         "unity3d",
         "android_cmdline_tools",
+        "xcodes",
         "sdkman",
         "downloader",
         "unzip",
