@@ -146,7 +146,7 @@ function install_process_android_cmdline_tools() {
 
     # add config for sdk, cmdline-tools
     local shell_config_file=$(get_shell_config_file)
-    local config_for_cmdtools="export PATH=\"/Users/bagelcode/Library/Android/sdk/cmdline-tools/$target_cmdline_tools/bin:\$PATH\""
+    local config_for_cmdtools="export PATH=\"\$HOME/Library/Android/sdk/cmdline-tools/$target_cmdline_tools/bin:\$PATH\""
     safe_append_config "$config_for_cmdtools" $shell_config_file
     local config_for_sdk="export ANDROID_HOME=$HOME/Library/Android/sdk"
     safe_append_config "$config_for_sdk" $shell_config_file
