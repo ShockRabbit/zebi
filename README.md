@@ -37,6 +37,7 @@
 - unzip
 - xcodes
 - android_cmdline_tools
+- macports
 
 ## Archived
 - android_sdk
